@@ -393,37 +393,6 @@
             z-index: 20000;
         }
 
-        #currentDate {
-            position: fixed;
-            bottom: clamp(90px, 10vh, 105px);
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 25000;
-
-            /* --- Kiểu chữ Bold & Serif --- */
-            font-family: "Times New Roman", Times, serif;
-            font-size: 27px;
-            /* Tăng nhẹ kích thước */
-            font-weight: 800;
-            /* Độ đậm cao nhất */
-            letter-spacing: 2px;
-            /* Giãn chữ cho thoáng giống tiêu đề */
-            text-transform: uppercase;
-            /* Viết hoa để đồng bộ hoàn toàn */
-
-            /* --- Màu sắc & Hiệu ứng --- */
-            color: #FFFFFF;
-            background: transparent;
-            /* Bỏ nền để cùng tông với ảnh */
-
-            /* Đổ bóng đậm để chữ nổi khối trên nền xanh */
-            text-shadow:
-                2px 2px 4px rgba(0, 0, 0, 0.7),
-                0px 0px 10px rgba(255, 255, 255, 0.2);
-
-            user-select: none;
-            white-space: nowrap;
-        }
     </style>
 </head>
 
@@ -512,7 +481,6 @@
                 if (homeBtn) {
                     homeBtn.style.display = 'flex'; // tránh page scroll
                 }
-                currentDate.style.display = 'none';
 
                 const home = document.getElementById('home-screen');
                 if (home && home.style.display !== 'none') {
@@ -712,12 +680,12 @@
                     currentPrizeIndex: 0, // Giải hiện tại đang chờ quay
                     highlightInterval: null,
                     btns: [
-                        { label: 'GIẢI KHUYẾN KHÍCH', cn: '鼓励奖', value: 20, done: false },
-                        { label: 'GIẢI BA', cn: '三等奖', value: 10, done: false },
-                        { label: 'GIẢI NHÌ', cn: '二等奖', value: 10, done: false },
-
-                        { label: 'GIẢI NHẤT', cn: '一等奖', value: 5, done: false },
-                        { label: 'GIẢI KHÍCH LỆ BU', cn: '鼓励奖', value: 10, done: false }
+                        { label: 'GIẢI ĐẶC BIỆT', cn: '特别奖', value: 1, done: false },
+                        { label: 'GIẢI NHẤT', cn: '一等奖', value: 1, done: false },
+                        { label: 'GIẢI NHÌ', cn: '二等奖', value: 2, done: false },
+                        { label: 'GIẢI BA', cn: '三等奖', value: 8, done: false },
+                        { label: 'KHUYẾN KHÍCH', cn: '鼓励奖', value: 20, done: false },
+                        { label: 'KHÍCH LỆ', cn: '安慰奖', value: 50, done: false }
                     ]
                 }
                 ,
@@ -871,26 +839,6 @@
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-
-            function updateDate() {
-                const now = new Date();
-                const day = String(now.getDate()).padStart(2, '0');
-                const month = String(now.getMonth() + 1).padStart(2, '0');
-                const year = now.getFullYear();
-
-                const el = document.getElementById('currentDate');
-                if (el) {
-                    el.innerText = `${day}-${month}-${year}`;
-                }
-            }
-
-            updateDate();
-            setInterval(updateDate, 1000);
-        });
-    </script>
-
-    <script>
         function showAlert() {
             document.getElementById('customAlert').style.display = 'flex';
         }
@@ -947,7 +895,7 @@
     <div class="result-btn">
         <a href="./result.html" target="_blank">获奖名单</a>
     </div>
-    <div id="currentDate"></div>
+
     <!-- NÚT VỀ HOME -->
     <div class="home-btn">
         <a href="#" onclick="showHome()">首页</a>
