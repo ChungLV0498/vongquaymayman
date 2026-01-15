@@ -451,17 +451,22 @@
 
         <!-- BÊN PHẢI: NÚT ĐIỀU KHIỂN -->
         <div class="tools-right lottery-controls">
-            <button class="pure-button btn-main" @click.stop="toggle" :class="running ? 'btn-stop' : 'btn-start'">
+            <button v-if="showBackButton" class="pure-button btn-main btn-start" @click.stop="confirmResult">
+                <span class="vi">Quay lại</span>
+                <span class="cn">返回</span>
+            </button>
+            <button v-if="!showBackButton" class="pure-button btn-main" @click.stop="toggle" :class="running ? 'btn-stop' : 'btn-start'">
                 <span class="vi">{{ running ? 'DỪNG' : 'BẮT ĐẦU' }}</span>
                 <span class="cn">{{ running ? '停止' : '开始' }}</span>
             </button>
-
+             <button v-else disabled class="pure-button btn-main btn-start">
+                <span class="vi">BẮT ĐẦU</span>
+                <span class="cn">开始</span>
+            </button>
             <button class="pure-button btn-reset" @click.stop="showResetAlert">
                 <span class="vi">CÀI LẠI</span>
                 <span class="cn">重置</span>
             </button>
-
-
         </div>
     </div>
 
@@ -580,6 +585,7 @@
 
             document.getElementById('main').appendChild(canvas);
             function renderWinners(ret) {
+                console.log('Winners:', ret); // For debugging
                 let html = '';
                 let perRow = 5; // mặc định 5 người/1 hàng
 
@@ -595,14 +601,12 @@
 
                     rowItems.forEach(m => {
                         html += `
-            <div class="winner" style=" text-align:center; ">
-                <img src="${m.photo}" 
-                     onerror="this.onerror=null;this.src='img/users/noImage.jpg';" 
-                     style="width:120px; height:120px; border-radius:50%; border:3px solid #ff9800; box-shadow:0 4px 10px rgba(0,0,0,0.5);">
-                <span style="display:block; font-weight:bold;padding: 4px 10px; font-size:16px; margin-top:5px;">
-                    ${m.name}<br>
-                    <span class="msnv" style="color:red;padding: 4px 10px; font-size:14px;    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-    margin: 0 0 0 -10px;">${m.phone}</span>
+            <div class="winner-item" style="background: transparent; box-shadow: none; display: flex; flex-direction: column; align-items: center; padding: 5px;">
+                <span style="background: transparent; box-shadow: none; border-radius: 0; color: white; font-weight: bold; font-size: 25px; text-align: center; width: auto; padding: 2px;">
+                    ${m.name}
+                </span>
+                <span class="msnv" style="background: transparent; box-shadow: none; border-radius: 0; color: red; font-size: 18px; text-align: center; width: auto; padding: 2px;">
+                    ${m.phone}
                 </span>
             </div>`;
                     });
@@ -619,14 +623,6 @@
 
                 // Thêm hiệu ứng pháo hoa
                 createConfetti();
-                html += `
-<div style="margin-top:0px;">
-    <button class="pure-button btn-reset"
-        style="width:200px;height:60px;font-size:18px;"
-        onclick="confirmResult()">确认
-    </button>
-</div>
-`;
                 // 🔽 DÒNG NÀY PHẢI LÀ CUỐI
                 $('#result').html(html).show();
                 $('#main').addClass('mask');
@@ -677,6 +673,7 @@
                     selectedIndex: null,   // 👈 thêm dòng này
                     running: false,
                     showResult: false,
+                    showBackButton: false,
                     currentPrizeIndex: 0, // Giải hiện tại đang chờ quay
                     highlightInterval: null,
                     btns: [
@@ -709,6 +706,16 @@
                     }
                 },
                 methods: {
+                    confirmResult: function() {
+                        document.getElementById('result').style.display = 'none';
+                        document.getElementById('main').classList.remove('mask');
+                        document.getElementById('restoreResultBtn').style.display = 'none';
+
+                        this.running = false;
+                        this.showBackButton = false;
+
+                        needConfirm = false;   // ✅ MỞ KHÓA
+                    },
                     showResetAlert: function () {
                         showResetAlert();
                     },
@@ -797,6 +804,7 @@
                             }
                             renderWinners(ret);
                             this.showResult = true;
+                            this.showBackButton = true;
                             TagCanvas.Reload('myCanvas');
                             setTimeout(() => {
                                 var prizeLabel = this.selectedIndex !== null ? this.btns[this.selectedIndex].label : "GIẢI PHẦN THƯỞNG";
