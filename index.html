@@ -117,10 +117,10 @@
         }
 
         .winner-container {
-            display: grid;
+            display: flex;
+            flex-wrap: wrap;
             justify-content: center;
-            align-items: center;
-            gap: 5px;
+            align-items: flex-start; /* Align items to the start of the cross axis */
             width: 100%;
             height: 100%;
             padding: 20px;
@@ -136,6 +136,7 @@
             box-shadow: none;
             padding: 0;
             text-align: center;
+            margin: 5px; /* Added margin for spacing */
         }
 
         .winner-name {
@@ -148,6 +149,7 @@
             width: auto;
             padding: 2px;
             text-align: center;
+            line-height: 1.2em;
         }
 
         .winner-phone {
@@ -159,34 +161,48 @@
             width: auto;
             padding: 2px;
             text-align: center;
+            line-height: 1.2em;
         }
 
         /* 1 người */
         .single-winner {
-            grid-template-columns: 1fr;
+            /* grid-template-columns: 1fr; */
+            font-size: 4rem; /* Larger base font for single winner */
+        }
+        .single-winner .winner-name {
+            font-size: 8vw; /* Very large font for name */
+        }
+        .single-winner .winner-phone {
+            font-size: 4vw; /* Large font for phone */
         }
 
         /* 2 người */
         .two-winners {
-            grid-template-columns: 1fr;
-            grid-template-rows: repeat(2, 1fr);
+            /* grid-template-columns: 1fr;
+            grid-template-rows: repeat(2, 1fr); */
+            flex-direction: column;
         }
 
         /* 8 người */
         .eight-winners {
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(4, 1fr);
+            /* grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(4, 1fr); */
+        }
+
+        .eight-winners .winner-item-text-only,
+        .ten-winners .winner-item-text-only {
+            flex: 0 1 45%; /* Create a 2-column layout */
         }
 
         /* 10 người */
         .ten-winners {
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(5, 1fr);
+            /* grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(5, 1fr); */
         }
         
         /* Nhiều người (mặc định) */
         .multiple-winners {
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            /* grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
         }
         #home-screen {
             position: fixed;
@@ -205,9 +221,10 @@
 
 
         .lottery-controls .pure-button {
-            width: 170px;
-            height: 85px;
-            border-radius: 16px;
+            width: 160px;
+            height: auto;
+            padding: 3px 0;
+            border-radius: 15px;
             border: none;
             color: #fff;
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
@@ -260,10 +277,10 @@
             background: transparent;
             /* line-height: 30px; */
             color: #fff;
-            margin: 5px;
+            margin: 0px;
             border-radius: 10px;
             box-shadow: none;
-            padding: 10px 10px;
+            padding: 2px 10px;
             text-align: center;
         }
 
