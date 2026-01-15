@@ -120,7 +120,8 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            align-items: flex-start; /* Align items to the start of the cross axis */
+            align-items: center; /* Center items vertically */
+            align-content: center; /* Pack rows together */
             width: 100%;
             height: 100%;
             padding: 20px;
@@ -182,6 +183,15 @@
             grid-template-rows: repeat(2, 1fr); */
             flex-direction: column;
         }
+        .two-winners .winner-name {
+            font-size: 6vw;
+        }
+        .two-winners .winner-phone {
+            font-size: 3vw;
+        }
+        .two-winners .winner-item-text-only {
+            margin-bottom: 10px;
+        }
 
         /* 8 người */
         .eight-winners {
@@ -192,6 +202,15 @@
         .eight-winners .winner-item-text-only,
         .ten-winners .winner-item-text-only {
             flex: 0 1 45%; /* Create a 2-column layout */
+            margin-bottom: 10px; /* Add vertical spacing between rows */
+        }
+        .eight-winners .winner-name,
+        .ten-winners .winner-name {
+            font-size: 3.5rem;
+        }
+        .eight-winners .winner-phone,
+        .ten-winners .winner-phone {
+            font-size: 1.75rem;
         }
 
         /* 10 người */
@@ -755,7 +774,7 @@
                     currentPrizeIndex: 0, // Giải hiện tại đang chờ quay
                     highlightInterval: null,
                     btns: [
-                        { label: 'GIẢI ĐẶC BIỆT', cn: '特别奖', value: 1, done: false },
+                        { label: 'ĐẶC BIỆT', cn: '特别奖', value: 1, done: false },
                         { label: 'GIẢI NHẤT', cn: '一等奖', value: 1, done: false },
                         { label: 'GIẢI NHÌ', cn: '二等奖', value: 2, done: false },
                         { label: 'GIẢI BA', cn: '三等奖', value: 8, done: false },
@@ -981,7 +1000,7 @@
     </script>
     <script>
         function confirmResult() {
-            document.getElementById('result').style.display = 'none';
+            document.getElementById('result').style.display = 'none';1
             document.getElementById('main').classList.remove('mask');
             document.getElementById('restoreResultBtn').style.display = 'none';
 
