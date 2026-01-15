@@ -158,7 +158,7 @@
             box-shadow: none;
             border-radius: 0;
             color: red;
-            font-size: 18px;
+            font-size: 27px; /* Increased by 1.5x from 18px */
             width: auto;
             padding: 2px;
             text-align: center;
@@ -174,7 +174,7 @@
             font-size: 8vw; /* Very large font for name */
         }
         .single-winner .winner-phone {
-            font-size: 4vw; /* Large font for phone */
+            font-size: 7.5vw; /* Increased by 1.5x from 5vw */
         }
 
         /* 2 người */
@@ -187,7 +187,7 @@
             font-size: 6vw;
         }
         .two-winners .winner-phone {
-            font-size: 3vw;
+            font-size: 4.5vw; /* Increased by 1.5x from 3vw */
         }
         .two-winners .winner-item-text-only {
             margin-bottom: 10px;
@@ -202,7 +202,7 @@
         .eight-winners .winner-item-text-only,
         .ten-winners .winner-item-text-only {
             flex: 0 1 45%; /* Create a 2-column layout */
-            margin-bottom: 10px; /* Add vertical spacing between rows */
+            margin-bottom: 20px; /* Increased vertical spacing between rows */
         }
         .eight-winners .winner-name,
         .ten-winners .winner-name {
@@ -210,7 +210,7 @@
         }
         .eight-winners .winner-phone,
         .ten-winners .winner-phone {
-            font-size: 1.75rem;
+            font-size: 2.625rem; /* Increased by 1.5x from 1.75rem */
         }
 
         /* 10 người */
@@ -248,6 +248,20 @@
             color: #fff;
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
             transition: all 0.25s ease;
+        }
+
+        #current-prize-title {
+            position: absolute;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 4rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px black, 0 0 20px black;
+            z-index: 100;
+            text-align: center;
+            white-space: nowrap;
         }
 
         #myCanvas {
@@ -532,9 +546,8 @@
     <!-- Thêm nhạc nền tại đây -->
     <audio id="bgMusic" src="audio/tatNien2024(30s).mp3" loop></audio>
 
-
+    <div id="current-prize-title"></div>
     <div id="main" class="wall">
-
     </div>
     <div id="result" class="result">
     </div>
@@ -819,6 +832,12 @@
                     onClick: function (item, index) {
                         if (item.done) return;
 
+                        // Update prize title
+                        const prizeTitleEl = document.getElementById('current-prize-title');
+                        if (prizeTitleEl) {
+                            prizeTitleEl.innerHTML = `${item.label} - ${item.cn}`;
+                        }
+
                         $('#result').css('display', 'none');
                         if (needConfirm) {
                             document.getElementById('restoreResultBtn').style.display = 'block';
@@ -986,6 +1005,11 @@
             document.getElementById('customResetAlert').style.display = 'none';
         }
         function confirmReset() {
+            // Clear prize title
+            const prizeTitleEl = document.getElementById('current-prize-title');
+            if (prizeTitleEl) {
+                prizeTitleEl.innerHTML = '';
+            }
             localStorage.clear();
             location.reload(true);
         }
@@ -1000,7 +1024,7 @@
     </script>
     <script>
         function confirmResult() {
-            document.getElementById('result').style.display = 'none';1
+            document.getElementById('result').style.display = 'none';
             document.getElementById('main').classList.remove('mask');
             document.getElementById('restoreResultBtn').style.display = 'none';
 
