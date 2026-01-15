@@ -697,6 +697,16 @@
                         dragControl: 1,
                         textHeight: 14
                     });
+
+                    var lastIndex = localStorage.getItem('lastSelectedIndex');
+                    if (lastIndex !== null) {
+                        var index = parseInt(lastIndex, 10);
+                        var lastPrize = this.btns[index];
+                        if (lastPrize && !lastPrize.done) {
+                            this.selectedIndex = index;
+                            this.selected = Math.min(lastPrize.value, 10);
+                        }
+                    }
                 },
                 methods: {
                     showResetAlert: function () {
@@ -711,8 +721,9 @@
                         }
                         $('#main').removeClass('mask');
 
-                        this.selected = item.value;
+                        this.selected = Math.min(item.value, 10);
                         this.selectedIndex = index;
+                        localStorage.setItem('lastSelectedIndex', index);
                     }
 
                     ,
@@ -721,22 +732,57 @@
                         if (isToggling) return;          // ★ khóa trùng lặp
                         isToggling = true;               // ★ gạt công tắc
 
-                        // Nếu chưa chọn giải nào, mặc định 1 người
-                        if (!this.running && this.selected === 0) {
-                            this.selected = 1;
-                            this.selectedIndex = null;
-                        }
+                        // Logic for STARTING a draw
+                        if (!this.running) {
+                            // If a prize button is currently selected
+                            if (this.selectedIndex !== null) {
+                                var currentPrize = this.btns[this.selectedIndex];
+                                // Check if the current prize has run out
+                                if (currentPrize.value <= 0) {
+                                    showAlert(); // Show the alert
+                                    isToggling = false; // Release the lock
+                                    return; // Prevent starting the draw
+                                }
+                                // Ensure this.selected is correctly set to max 10 for the next draw
+                                this.selected = Math.min(currentPrize.value, 10);
+                            } else {
+                                // If no prize button is highlighted, but we are about to start a draw
+                                // This covers the initial state or when a prize was finished and not re-selected.
+                                if (this.selected === 0) { // If it was reset, set to 1 for generic draw
+                                    this.selected = 1;
+                                }
+                            }
 
-                        if (this.running) {
-                            /* ==== DỪNG QUAY (giữ nguyên code cũ) ==== */
+                            // ... rest of the starting animation logic ...
+                            $('#result').css('display', 'none');
+                            if (needConfirm) {
+                                document.getElementById('restoreResultBtn').style.display = 'block';
+                            }
+                            $('#main').removeClass('mask');
+                            var list = canvas.getElementsByTagName('a');
+                            var i = 0;
+                            var interval = setInterval(() => {
+                                list.forEach(a => a.style.color = 'white');
+                                list[i % list.length].style.color = 'orange';
+                                i++;
+                            }, 50);
+                            bgMusic.currentTime = 0;
+                            bgMusic.play();
+                            this.highlightInterval = interval;
+                            TagCanvas.SetSpeed('myCanvas', [5, 1]);
+
+                        } else {
+                            /* ==== DỪNG QUAY ==== */
                             TagCanvas.SetSpeed('myCanvas', speed());
                             bgMusic.pause();
                             var ret = lottery(this.selected);
 
                             if (this.selectedIndex !== null) {
-                                this.btns[this.selectedIndex].done = true;
-                                this.btns[this.selectedIndex].value = 0;
-                                this.selected = 0;
+                                var prize = this.btns[this.selectedIndex];
+                                prize.value -= this.selected;
+                                if (prize.value <= 0) {
+                                    prize.done = true;
+                                }
                             }
                             if (ret.length === 0) {
                                 $('#result').css('display', 'block').html(
@@ -758,24 +804,6 @@
                                 localStorage.setItem(new Date().toString(), JSON.stringify({ prize: prizeLabel, winners: winners }));
                                 $('#main').addClass('mask');
                             }, 300);
-                        } else {
-                            /* ==== BẮT ĐẦU QUAY (giữ nguyên code cũ) ==== */
-                            $('#result').css('display', 'none');
-                            if (needConfirm) {
-                                document.getElementById('restoreResultBtn').style.display = 'block';
-                            }
-                            $('#main').removeClass('mask');
-                            var list = canvas.getElementsByTagName('a');
-                            var i = 0;
-                            var interval = setInterval(() => {
-                                list.forEach(a => a.style.color = 'white');
-                                list[i % list.length].style.color = 'orange';
-                                i++;
-                            }, 50);
-                            bgMusic.currentTime = 0;
-                            bgMusic.play();
-                            this.highlightInterval = interval;
-                            TagCanvas.SetSpeed('myCanvas', [5, 1]);
                         }
 
                         this.running = !this.running;
