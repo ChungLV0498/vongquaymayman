@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="screen-orientation" content="portrait">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0" />
+    <title>FIT_TE</title>
+    <link rel="stylesheet" type="text/css" href="css/reset.css">
+    <link rel="stylesheet" type="text/css" href="css/wall.css">
+    <style type="text/css">
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
+        .alert-mask {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+        }
+
+        #currentDate {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 25000;
+
+            /* --- Kiểu chữ Bold & Serif --- */
+            font-family: "Times New Roman", Times, serif;
+            font-size: 26px;
+            /* Tăng nhẹ kích thước */
+            font-weight: 800;
+            /* Độ đậm cao nhất */
+            letter-spacing: 2px;
+            /* Giãn chữ cho thoáng giống tiêu đề */
+            text-transform: uppercase;
+            /* Viết hoa để đồng bộ hoàn toàn */
+
+            /* --- Màu sắc & Hiệu ứng --- */
+            color: #FFFFFF;
+            background: transparent;
+            /* Bỏ nền để cùng tông với ảnh */
+
+            /* Đổ bóng đậm để chữ nổi khối trên nền xanh */
+            text-shadow:
+                2px 2px 4px rgba(0, 0, 0, 0.7),
+                0px 0px 10px rgba(255, 255, 255, 0.2);
+
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .winner {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+            color: #000;
+        }
+
+        .winner img {
+            width: 15vw;
+            /* 15% chiều rộng màn hình */
+            height: 15vw;
+            max-width: 160px;
+            /* không quá lớn */
+            max-height: 160px;
+            border-radius: 50%;
+            border: 3px solid #ff9800;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .home-arrow {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            font-size: 60px;
+            color: #fff;
+            cursor: pointer;
+            animation: bounce 1.2s infinite;
+            z-index: 10000;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            50% {
+                transform: translateX(15px);
+            }
+        }
+
+
+        .winner-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            color: #000;
+            margin: 5px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
+            padding: 10px;
+        }
+
+
+        .alert-box {
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 260px;
+        }
+
+        .alert-box h3 {
+            margin-bottom: 10px;
+            color: #e53935;
+        }
+
+        .alert-box button {
+            margin-top: 15px;
+            padding: 6px 20px;
+            border: none;
+            background: #2196f3;
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        #btnEnterLottery {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 30000;
+            font-size: 50px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 18px;
+            border-radius: 50%;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* Mặc định ẩn nút back */
+
+        .result {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            /* xếp hàng */
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            pointer-events: auto;
+            overflow: auto;
+            gap: 15px;
+            /* khoảng cách giữa các hàng */
+        }
+
+        .result .row {
+            display: flex;
+            justify-content: center;
+            /* căn giữa từng hàng */
+            gap: 15px;
+            /* khoảng cách giữa từng người trong hàng */
+        }
+
+        .result .winner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+
+
+
+
+
+
+        /* ===== TRANG CHỦ ===== */
+        #home-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+
+        }
+
+        #home-screen img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: inherit;
+        }
+
+
+        .lottery-controls .pure-button {
+            width: 170px;
+            height: 85px;
+            border-radius: 16px;
+            border: none;
+            color: #fff;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+            transition: all 0.25s ease;
+        }
+
+        #myCanvas {
+            /* display: block; */
+        }
+
+
+        /* Text */
+        .lottery-controls .vi {
+            display: block;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .lottery-controls .cn {
+            display: block;
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        /* Màu */
+        .lottery-controls .btn-start {
+            background: linear-gradient(135deg, #ff5722, #ff9800);
+        }
+
+        .lottery-controls .btn-stop {
+            background: linear-gradient(135deg, #d32f2f, #b71c1c);
+        }
+
+        .lottery-controls .btn-reset {
+            background: linear-gradient(135deg, #2196f3, #03a9f4);
+        }
+
+        /* Disable */
+        .lottery-controls .pure-button:disabled {
+            background: #9e9e9e;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+
+        .result span {
+            display: inline-block;
+            font-size: 25px;
+            width: 170px;
+            background: #fff;
+            /* line-height: 30px; */
+            color: #000;
+            margin: 5px;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
+            padding: 10px 10px;
+        }
+
+        button,
+        input,
+        optgroup,
+        select,
+        textarea {
+            color: inherit;
+            font: inherit;
+            margin: 0;
+            border: none;
+        }
+
+        button {
+            overflow: visible;
+        }
+
+        button,
+        select {
+            text-transform: none;
+        }
+
+        button,
+        html input[type=button],
+        input[type=reset],
+        input[type=submit] {
+            -webkit-appearance: button;
+            cursor: pointer;
+        }
+
+        .pure-button {
+            display: inline-block;
+            zoom: 1;
+            line-height: normal;
+            white-space: nowrap;
+            vertical-align: middle;
+            text-align: center;
+            cursor: pointer;
+            -webkit-user-drag: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        .pure-button {
+            font-family: inherit;
+            font-size: 100%;
+            padding: .5em 1em;
+            color: #444;
+            color: rgba(0, 0, 0, .8);
+            border: 0 rgba(0, 0, 0, 0);
+            background-color: #E6E6E6;
+            text-decoration: none;
+            border-radius: 15px;
+        }
+
+        .pure-button:focus {
+            outline: 0
+        }
+
+        .pure-button-hover,
+        .pure-button:hover,
+        .pure-button:focus {
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#1a000000', GradientType=0);
+            background-image: -webkit-gradient(linear, 0 0, 0 100%, from(transparent), color-stop(40%, rgba(0, 0, 0, .05)), to(rgba(0, 0, 0, .1)));
+            background-image: -webkit-linear-gradient(transparent, rgba(0, 0, 0, .05) 40%, rgba(0, 0, 0, .1));
+            background-image: -moz-linear-gradient(top, rgba(0, 0, 0, .05) 0, rgba(0, 0, 0, .1));
+            background-image: -o-linear-gradient(transparent, rgba(0, 0, 0, .05) 40%, rgba(0, 0, 0, .1));
+            background-image: linear-gradient(transparent, rgba(0, 0, 0, .05) 40%, rgba(0, 0, 0, .1));
+        }
+
+        .button-success,
+        .button-error,
+        .button-warning,
+        .button-secondary {
+            color: white;
+            border-radius: 4px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        .button-success {
+            background: rgb(28, 184, 65);
+        }
+
+        .button-error {
+            background: rgb(202, 60, 60);
+        }
+
+        .button-warning {
+            background: rgb(223, 117, 20);
+        }
+
+        .button-secondary {
+            background: rgb(66, 184, 221);
+        }
+
+        .tools {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 20px;
+        }
+
+        /* BÊN TRÁI */
+        .tools-left {
+            display: flex;
+            /* gap: 10px; */
+            flex-wrap: wrap;
+            max-width: 65%;
+        }
+
+        /* BÊN PHẢI */
+        .tools-right {
+            display: flex;
+            flex-direction: inherit;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* =========================
+   FIX HOVER BỊ MỜ NÚT CHÍNH
+   ========================= */
+
+        /* Ghi đè hover mặc định của pure-button */
+        .lottery-controls .pure-button:hover,
+        .lottery-controls .pure-button:focus {
+            background-image: none !important;
+            filter: none !important;
+            opacity: 1 !important;
+            transform: translateY(-2px) scale(1.03);
+        }
+
+        /* Hiệu ứng sáng theo từng nút */
+        .lottery-controls .btn-start:hover {
+            box-shadow: 0 0 20px rgba(255, 152, 0, 0.9);
+        }
+
+        .lottery-controls .btn-stop:hover {
+            box-shadow: 0 0 20px rgba(211, 47, 47, 0.9);
+        }
+
+        .lottery-controls .btn-reset:hover {
+            box-shadow: 0 0 20px rgba(3, 169, 244, 0.9);
+        }
+
+
+
+        .tools .pure-button {
+            display: inline-block;
+            margin: 5px;
+            /* padding: 10px 0; */
+            text-align: center;
+            width: 150px;
+            font-size: 13px;
+        }
+
+        .mask {
+            -webkit-filter: blur(5px);
+            filter: blur(5px);
+        }
+
+        #main {
+            position: relative;
+            width: 100%;
+            height: 100%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-btn {
+            position: fixed;
+            top: 20px;
+            right: 1px;
+            z-index: 20000;
+        }
+
+        #btnBackHome {
+            color: #ffffff;
+            position: fixed;
+            top: 0px;
+            right: 1px;
+            z-index: 20000;
+            display: none;
+
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ===== TRANG CHỦ ===== -->
+    <div id="home-screen">
+        <img src="img/home.png">
+    </div>
+
+
+
+    <div id="customAlert" class="alert-mask" style="display:none">
+        <div class="alert-box">
+            <h3>Thông báo</h3>
+            <p>Giải này đã quay xong！<br>该奖项已抽完！</p>
+            <button onclick="closeAlert()">OK</button>
+        </div>
+    </div>
+
+    <div id="customResetAlert" class="alert-mask" style="display:none">
+        <div class="alert-box">
+            <h3>Thông báo</h3>
+            <p style="font-size:18px; font-weight:bold;">
+                Bạn có chắc chắn muốn cài lại không?<br>
+                <span style="font-size:14px; font-weight:normal;">
+                    确定要重置么？
+                </span><br>
+                Tất cả lịch sử quay trước đó sẽ bị xóa!
+            </p>
+            <button onclick="confirmReset()">OK</button>
+            <button onclick="closeResetAlert()" style="margin-left:10px;">Hủy</button>
+        </div>
+    </div>
+    <!-- Thêm nhạc nền tại đây -->
+    <audio id="bgMusic" src="audio/tatNien2024(30s).mp3" loop></audio>
+
+
+    <div id="main" class="wall">
+
+    </div>
+    <div id="result" class="result">
+    </div>
+    <div id="tools" class="tools">
+        <!-- BÊN TRÁI: CÁC GIẢI -->
+        <div class="tools-left">
+            <button v-for="(item, index) in btns" @click="onClick(item, index)" class="pure-button"
+                :disabled="item.done" :class="{ 'button-error': selectedIndex === index,
+                  'button-secondary': item.done }" style="line-height:1.2;width: 160px;padding:3px 0;">
+                <div style="font-size:13px;font-weight:bold">{{ item.label }}</div>
+                <div style="font-size:11px;color:#444">{{ item.cn }}</div>
+                <div style="font-size:10px;margin-top:2px">
+                    {{ item.done ? 0 : item.value }}
+                </div>
+            </button>
+        </div>
+
+        <!-- BÊN PHẢI: NÚT ĐIỀU KHIỂN -->
+        <div class="tools-right lottery-controls">
+            <button class="pure-button btn-main" @click.stop="toggle" :class="running ? 'btn-stop' : 'btn-start'">
+                <span class="vi">{{ running ? 'DỪNG' : 'BẮT ĐẦU' }}</span>
+                <span class="cn">{{ running ? '停止' : '开始' }}</span>
+            </button>
+
+            <button class="pure-button btn-reset" @click.stop="showResetAlert">
+                <span class="vi">CÀI LẠI</span>
+                <span class="cn">重置</span>
+            </button>
+
+
+        </div>
+    </div>
+
+    <script type="text/javascript" src="js/zepto.js"></script>
+    <script type="text/javascript" src="js/vue.js"></script>
+    <script type="text/javascript" src="js/tagcanvas.js"></script>
+    <script type="text/javascript" src="js/member.js"></script>
+    <script>
+        document.addEventListener('keydown', function (e) {
+            if (e.code === 'Enter' || e.code === 'Space') {
+                e.preventDefault();                       // tránh page scroll
+                btnBackHome.style.display = 'flex';
+                currentDate.style.display = 'none';
+                const home = document.getElementById('home-screen');
+                if (home && home.style.display !== 'none') {
+                    home.style.display = 'none';
+                    // btnEnterLottery.style.display = 'none'; 
+
+                    return;
+                }
+                window.appVue.toggle();                   // ★ gọi chung 1 hàm
+            }
+        });
+
+
+    </script>
+
+
+    <script type="text/javascript">
+        (function () {
+            var choosed = JSON.parse(localStorage.getItem('choosed')) || {};
+            var bgMusic = document.getElementById('bgMusic'); // 🎵 nhạc nền
+            var isToggling = false;
+            console.log(choosed);
+            var speed = function () {
+                return [0.1 * Math.random() + 0.01, -(0.1 * Math.random() + 0.01)];
+            };
+            var getKey = function (item) {
+                return item.name + '-' + item.phone;
+            };
+            var createHTML = function () {
+                var html = ['<ul>'];
+                member.forEach(function (item, index) {
+                    item.index = index;
+                    var key = getKey(item);
+                    var color = choosed[key] ? 'yellow' : 'white';
+                    html.push('<li><a href="#" style="color: ' + color + ';">' + item.name + '</a></li>');
+                });
+                html.push('</ul>');
+                return html.join('');
+            };
+            // var lottery = function (count) {
+            //     var list = canvas.getElementsByTagName('a');
+            //     var color = 'yellow';
+            //     var ret = member
+            //         .filter(function (m, index) {
+            //             m.index = index;
+            //             return !choosed[getKey(m)];
+            //         })
+            //         .map(function (m) {
+            //             return Object.assign({
+            //                 score: Math.random()
+            //             }, m);
+            //         })
+            //         .sort(function (a, b) {
+            //             return a.score - b.score;
+            //         })
+            //         .slice(0, count)
+            //         .map(function (m) {
+            //             choosed[getKey(m)] = 1;
+            //             list[m.index].style.color = color;
+            //             return m.name + '<br/>' + m.phone;
+            //         });
+            //     localStorage.setItem('choosed', JSON.stringify(choosed));
+            //     return ret;
+            // };
+            //tuanlg
+
+            var lottery = function (count) {
+                var list = canvas.getElementsByTagName('a');
+                var color = 'yellow';
+
+                var remaining = member.filter(m => !choosed[getKey(m)]);
+
+                var ret = remaining
+                    .map(m => Object.assign({ score: Math.random() }, m))
+                    .sort((a, b) => a.score - b.score)
+                    .slice(0, count)
+                    .map(m => {
+                        choosed[getKey(m)] = 1;
+                        list[m.index].style.color = color;
+
+                        // tự tạo đường dẫn ảnh theo phone
+                        m.photo = 'img/users/' + m.phone + '.jpg'; // ảnh chính
+
+                        return m;
+                    });
+
+                localStorage.setItem('choosed', JSON.stringify(choosed));
+                return ret;
+            };
+
+
+
+
+            var canvas = document.createElement('canvas');
+            canvas.id = 'myCanvas';
+            canvas.width = document.body.offsetWidth;
+            canvas.height = document.body.offsetHeight;
+
+            document.getElementById('main').appendChild(canvas);
+            function renderWinners(ret) {
+                let html = '';
+                let perRow = 5; // mặc định 5 người/1 hàng
+
+                // Cập nhật số người/1 hàng theo yêu cầu
+                if (ret.length === 1) perRow = 1;
+                else if (ret.length === 5) perRow = 5;
+                else if (ret.length === 10) perRow = 5;
+                else if (ret.length === 20) perRow = 7;
+
+                for (let i = 0; i < ret.length; i += perRow) {
+                    let rowItems = ret.slice(i, i + perRow);
+                    html += `<div class="row" style="display:flex; justify-content:center; margin-bottom:15px;">`;
+
+                    rowItems.forEach(m => {
+                        html += `
+            <div class="winner" style=" text-align:center; ">
+                <img src="${m.photo}" 
+                     onerror="this.onerror=null;this.src='img/users/noImage.jpg';" 
+                     style="width:120px; height:120px; border-radius:50%; border:3px solid #ff9800; box-shadow:0 4px 10px rgba(0,0,0,0.5);">
+                <span style="display:block; font-weight:bold;padding: 4px 10px; font-size:16px; margin-top:5px;">
+                    ${m.name}<br>
+                    <span class="msnv" style="color:red;padding: 4px 10px; font-size:14px;    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    margin: 0 0 0 -10px;">${m.phone}</span>
+                </span>
+            </div>`;
+                    });
+
+                    html += '</div>';
+                }
+
+                // Hiển thị kết quả
+                $('#result').css({
+                    'display': 'flex',
+                    'flex-direction': 'column',
+                    'align-items': 'center'
+                }).html(html);
+            }
+
+
+            window.appVue = new Vue({
+                el: '#tools',
+                data: {
+                    selected: 1,
+                    selectedIndex: null,   // 👈 thêm dòng này
+                    running: false,
+                    showResult: false,
+                    currentPrizeIndex: 0, // Giải hiện tại đang chờ quay
+                    highlightInterval: null,
+                    btns: [
+                        { label: 'GIẢI KHUYẾN KHÍCH', cn: '鼓励奖', value: 20, done: false },
+                        { label: 'GIẢI BA', cn: '三等奖', value: 10, done: false },
+                        { label: 'GIẢI NHÌ', cn: '二等奖', value: 10, done: false },
+                        { label: 'GIẢI NHẤT', cn: '一等奖', value: 5, done: false },
+                        { label: 'GIẢI KHÍCH LỆ BU', cn: '鼓励奖', value: 10, done: false }
+                    ]
+                }
+                ,
+                mounted() {
+                    canvas.innerHTML = createHTML();
+                    TagCanvas.Start('myCanvas', '', {
+                        textColour: null,
+                        initial: speed(),
+                        dragControl: 1,
+                        textHeight: 14
+                    });
+                },
+                methods: {
+                    showResetAlert: function () {
+                        showResetAlert();
+                    },
+                    onClick: function (item, index) {
+                        if (item.done) return;
+
+                        $('#result').css('display', 'none');
+                        $('#main').removeClass('mask');
+
+                        this.selected = item.value;
+                        this.selectedIndex = index;
+                    }
+
+                    ,
+                    toggle: function () {
+                        if (isToggling) return;          // ★ khóa trùng lặp
+                        isToggling = true;               // ★ gạt công tắc
+
+                        // Nếu chưa chọn giải nào, mặc định 1 người
+                        if (!this.running && this.selected === 0) {
+                            this.selected = 1;
+                            this.selectedIndex = null;
+                        }
+
+                        if (this.running) {
+                            /* ==== DỪNG QUAY (giữ nguyên code cũ) ==== */
+                            TagCanvas.SetSpeed('myCanvas', speed());
+                            bgMusic.pause();
+                            var ret = lottery(this.selected);
+
+                            if (this.selectedIndex !== null) {
+                                this.btns[this.selectedIndex].done = true;
+                                this.btns[this.selectedIndex].value = 0;
+                                this.selected = 0;
+                            }
+                            if (ret.length === 0) {
+                                $('#result').css('display', 'block').html(
+                                    '<span style="    width: 250px;">' +
+                                    '<b style="font-size:32px;color:#d32f2f">Đã hết người</b><br>' +
+                                    '<small style="font-size:20px;color:#555">已抽完</small>' +
+                                    '</span>'
+                                );
+                                this.running = false;
+                                isToggling = false;
+                                return;
+                            }
+                            renderWinners(ret);
+                            this.showResult = true;
+                            TagCanvas.Reload('myCanvas');
+                            setTimeout(() => {
+                                var prizeLabel = this.selectedIndex !== null ? this.btns[this.selectedIndex].label : "GIẢI PHẦN THƯỞNG";
+                                var winners = ret.map(item => [item.name, item.phone]);
+                                localStorage.setItem(new Date().toString(), JSON.stringify({ prize: prizeLabel, winners: winners }));
+                                $('#main').addClass('mask');
+                            }, 300);
+                        } else {
+                            /* ==== BẮT ĐẦU QUAY (giữ nguyên code cũ) ==== */
+                            $('#result').css('display', 'none');
+                            $('#main').removeClass('mask');
+                            var list = canvas.getElementsByTagName('a');
+                            var i = 0;
+                            var interval = setInterval(() => {
+                                list.forEach(a => a.style.color = 'white');
+                                list[i % list.length].style.color = 'orange';
+                                i++;
+                            }, 50);
+                            bgMusic.currentTime = 0;
+                            bgMusic.play();
+                            this.highlightInterval = interval;
+                            TagCanvas.SetSpeed('myCanvas', [5, 1]);
+                        }
+
+                        this.running = !this.running;
+                        isToggling = false;              // ★ mở khóa
+                    }
+                }
+            });
+        })();
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            function updateDate() {
+                const now = new Date();
+                const day = String(now.getDate()).padStart(2, '0');
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const year = now.getFullYear();
+
+                const el = document.getElementById('currentDate');
+                if (el) {
+                    el.innerText = `${day}-${month}-${year}`;
+                }
+            }
+
+            updateDate();
+            setInterval(updateDate, 1000);
+        });
+    </script>
+
+
+    <!-- <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const homeScreen = document.getElementById('home-screen');
+    const btnEnter = document.getElementById('btnEnterLottery');
+
+    // 👉 VÀO TRANG QUAY
+    btnEnter.onclick = function () {
+        homeScreen.style.display = 'none';
+        btnEnter.style.display = 'none';
+        btnBackHome.style.display = 'flex'; 
+        
+    };
+
+    // 👉 QUAY VỀ HOME
+   
+});
+</script> -->
+    <script>
+        document.addEventListener('click', function (e) {
+            const result = document.getElementById('result');
+            const tools = document.getElementById('tools');
+
+            // Nếu đang hiển thị kết quả
+            if (result && result.style.display !== 'none' && result.innerHTML.trim() !== '') {
+
+                // Không ẩn khi click vào nút điều khiển
+                if (tools.contains(e.target)) return;
+
+                // Ẩn kết quả
+                result.style.display = 'none';
+                document.getElementById('main').classList.remove('mask');
+            }
+        });
+    </script>
+
+
+
+    <script>
+        function showAlert() {
+            document.getElementById('customAlert').style.display = 'flex';
+        }
+
+        function closeAlert() {
+            document.getElementById('customAlert').style.display = 'none';
+        }
+        function showResetAlert() {
+            document.getElementById('customResetAlert').style.display = 'flex';
+        }
+        function closeResetAlert() {
+            document.getElementById('customResetAlert').style.display = 'none';
+        }
+        function confirmReset() {
+            localStorage.clear();
+            location.reload(true);
+        }
+    </script>
+    <!-- LINK XEM KẾT QUẢ -->
+    <div class="result-btn">
+        <a href="./result.html" target="_blank">获奖名单</a>
+    </div>
+    <div id="currentDate"></div>
+
+    <!-- Nút vào quay (chỉ hiện ở HOME) -->
+    <!-- <div id="btnEnterLottery" class="home-arrow"> ➤</div> -->
+    <!-- NÚT BACK = LINK -->
+    <a id="btnBackHome" href="./index.html">Back</a>
+
+</body>
+
+</html>
