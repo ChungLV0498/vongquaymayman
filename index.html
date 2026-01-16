@@ -292,12 +292,11 @@
             font-size: 5rem;
             font-weight: bold;
             font-family: 'Dancing Script', cursive;
-
             /* Thêm dòng này để đổi màu chữ */
-            color: #f8ff8f;
+
 
             /* Giữ nguyên shadow để chữ nổi bật trên nền tối */
-            text-shadow: 0 0 10px black, 0 0 20px #f8ff8f;
+            text-shadow: 0 0 10px black, 0 0 20px #C6965D;
             z-index: 100;
             text-align: center;
             white-space: nowrap;
@@ -773,6 +772,9 @@
                 $('#main').addClass('mask');
                 needConfirm = true; // 🔒 khóa quay
 
+                // Set current-prize-title color for winner interface
+                document.getElementById('current-prize-title').style.color = '#f8ff8f';
+
                 // Thêm hiệu ứng pháo hoa
                 createConfetti();
             }
@@ -851,6 +853,7 @@
                             this.selectedIndex = index;
                             this.selected = Math.min(lastPrize.value, 10);
                             document.getElementById('current-prize-title').innerHTML = lastPrize.label + ' - ' + lastPrize.cn;
+                            document.getElementById('current-prize-title').style.color = '#C6965D';
                         }
                     }
                 },
@@ -862,9 +865,9 @@
                         this.showBackButton = false;
                         this.running = false; // Allow starting a new spin
 
-                        needConfirm = false;
-                        TagCanvas.SetSpeed('myCanvas', speed()); // Reset to random speed
-                    },
+                                    needConfirm = false;
+                                    TagCanvas.SetSpeed('myCanvas', speed()); // Reset to random speed
+                                    document.getElementById('current-prize-title').style.color = '#C6965D';                    },
                     showResetAlert: function () {
                         showResetAlert();
                     },
@@ -878,6 +881,7 @@
                         this.selectedIndex = index;
                         localStorage.setItem('lastSelectedIndex', index);
                         document.getElementById('current-prize-title').innerHTML = item.label + ' - ' + item.cn;
+                        document.getElementById('current-prize-title').style.color = '#C6965D';
                     },
                     startLottery: function () {
                         if (this.running || needConfirm) return;
@@ -1054,6 +1058,7 @@
             const prizeTitleEl = document.getElementById('current-prize-title');
             if (prizeTitleEl) {
                 prizeTitleEl.innerHTML = '';
+                prizeTitleEl.style.color = ''; // Clear the color style
             }
             localStorage.clear();
             location.reload(true);
