@@ -565,9 +565,9 @@
     <div id="tools" class="tools">
         <!-- BÊN TRÁI: CÁC GIẢI -->
         <div class="tools-left">
-            <button v-for="(item, index) in btns" @click="onClick(item, index)" class="pure-button"
+            <button v-for="(item, index) in btns" @click="onClick(item, index)" @contextmenu.prevent="editQuantity(item, index)" class="pure-button"
                 :disabled="item.done" :class="{ 'button-error': selectedIndex === index,
-                  'button-secondary': item.done }" style="line-height:1.2;width: 160px;padding:3px 0;">
+                  'button-secondary': item.done }" style="line-height:1.2;width: 140px;padding:3px 0;">
                 <div style="font-size:13px;font-weight:bold">{{ item.label }}</div>
                 <div style="font-size:11px;color:#444">{{ item.cn }}</div>
                 <div style="font-size:10px;margin-top:2px">
@@ -798,12 +798,13 @@
                     currentPrizeIndex: 0, // Giải hiện tại đang chờ quay
                     highlightInterval: null,
                     btns: [
-                        { label: 'ĐẶC BIỆT', cn: '特别奖', value: 1, done: false },
+                        { label: 'GIẢI ĐẶC BIỆT', cn: '特别奖', value: 1, done: false },
                         { label: 'GIẢI NHẤT', cn: '一等奖', value: 1, done: false },
                         { label: 'GIẢI NHÌ', cn: '二等奖', value: 2, done: false },
                         { label: 'GIẢI BA', cn: '三等奖', value: 8, done: false },
                         { label: 'KHUYẾN KHÍCH', cn: '鼓励奖', value: 20, done: false },
-                        { label: 'KHÍCH LỆ', cn: '安慰奖', value: 50, done: false }
+                        { label: 'KHÍCH LỆ', cn: '安慰奖', value: 50, done: false },
+                        { label: 'GIẢI BONUS', cn: '奖金', value: 10, done: false }
                     ]
                 }
                 ,
@@ -850,84 +851,105 @@
                         this.selectedIndex = index;
                         localStorage.setItem('lastSelectedIndex', index);
                     },
-                    startLottery: function () {
-                        if (this.running || needConfirm) return;
-
-                        // Basic checks from old toggle function
-                        if (this.selectedIndex !== null) {
-                            var currentPrize = this.btns[this.selectedIndex];
-                            if (currentPrize.value <= 0) {
-                                showAlert();
-                                return;
-                            }
-                            this.selected = Math.min(currentPrize.value, 10);
-                        } else {
-                            if (this.selected === 0) {
-                                this.selected = 1;
-                            }
-                        }
-
-                        // --- Start Spinning ---
-                        this.running = true;
-                        $('#result').css('display', 'none');
-                        $('#main').removeClass('mask');
-
-                        bgMusic.currentTime = 0;
-                        bgMusic.play();
-                        TagCanvas.SetSpeed('myCanvas', [5, 1]);
-
-                        // --- Set Timeout to start the slowdown process ---
-                                                var spinDuration = 5000; // 5 seconds at full speed
-                                                setTimeout(() => {
-                                                    // --- Start Gradual Slowdown ---
-                                                    var currentSpeedX = 5;
-                                                    var currentSpeedY = 1;
-                                                    var slowdownInterval = setInterval(() => {
-                                                        currentSpeedX *= 0.95; // Exponential decay factor
-                                                        currentSpeedY *= 0.95;
-                                                        TagCanvas.SetSpeed('myCanvas', [currentSpeedX, currentSpeedY]);
-                        
-                                                        // Stop when speed is negligible
-                                                        if (Math.abs(currentSpeedX) < 0.05 && Math.abs(currentSpeedY) < 0.05) {
-                                                            clearInterval(slowdownInterval);
-                                                            TagCanvas.SetSpeed('myCanvas', [0, 0]); // Full stop
-                        
-                                                            // --- Officially End Spin ---
-                                                            bgMusic.pause();
-                                                            var ret = lottery(this.selected);
-                                                            var prizeLabel = this.selectedIndex !== null ? this.btns[this.selectedIndex].label : "GIẢI PHẦN THƯỞNG";
-                        
-                                                            if (this.selectedIndex !== null) {
-                                                                var prize = this.btns[this.selectedIndex];
-                                                                prize.value -= this.selected;
-                                                                if (prize.value <= 0) {
-                                                                    prize.done = true;
-                                                                }
+                                        startLottery: function () {
+                                            if (this.running || needConfirm) return;
+                    
+                                            // Basic checks from old toggle function
+                                            if (this.selectedIndex !== null) {
+                                                var currentPrize = this.btns[this.selectedIndex];
+                                                if (currentPrize.value <= 0) {
+                                                    showAlert();
+                                                    return;
+                                                }
+                                                this.selected = Math.min(currentPrize.value, 10);
+                                            } else {
+                                                if (this.selected === 0) {
+                                                    this.selected = 1;
+                                                }
+                                            }
+                    
+                                            // --- Start Spinning ---
+                                            this.running = true;
+                                            $('#result').css('display', 'none');
+                                            $('#main').removeClass('mask');
+                    
+                                            bgMusic.currentTime = 0;
+                                            bgMusic.play();
+                                            TagCanvas.SetSpeed('myCanvas', [5, 1]);
+                    
+                                            // --- Set Timeout to start the slowdown process ---
+                                            var spinDuration = 5000; // 5 seconds at full speed
+                                            setTimeout(() => {
+                                                // --- Start Gradual Slowdown ---
+                                                var currentSpeedX = 5;
+                                                var currentSpeedY = 1;
+                                                var slowdownInterval = setInterval(() => {
+                                                    currentSpeedX *= 0.95; // Exponential decay factor
+                                                    currentSpeedY *= 0.95;
+                                                    TagCanvas.SetSpeed('myCanvas', [currentSpeedX, currentSpeedY]);
+                    
+                                                    // Stop when speed is negligible
+                                                    if (Math.abs(currentSpeedX) < 0.05 && Math.abs(currentSpeedY) < 0.05) {
+                                                        clearInterval(slowdownInterval);
+                                                        TagCanvas.SetSpeed('myCanvas', [0, 0]); // Full stop
+                    
+                                                        // --- Officially End Spin ---
+                                                        bgMusic.pause();
+                                                        var ret = lottery(this.selected);
+                                                        var prizeLabel = this.selectedIndex !== null ? this.btns[this.selectedIndex].label : "GIẢI PHẦN THƯỞNG";
+                    
+                                                        if (this.selectedIndex !== null) {
+                                                            var prize = this.btns[this.selectedIndex];
+                                                            prize.value -= this.selected;
+                                                            if (prize.value <= 0) {
+                                                                prize.done = true;
                                                             }
-                        
-                                                            if (ret.length === 0) {
-                                                                $('#result').css('display', 'block').html(
-                                                                    '<span style="width: 250px;">' +
-                                                                    '<b style="font-size:32px;color:#d32f2f">Đã hết người</b><br>' +
-                                                                    '<small style="font-size:20px;color:#555">已抽完</small>' +
-                                                                    '</span>'
-                                                                );
-                                                                this.running = false; // Allow new spin
-                                                                return;
-                                                            }
-                        
-                                                            renderWinners(ret, prizeLabel);
-                                                            this.showResult = true;
-                                                            this.showBackButton = true;
-                                                            TagCanvas.Reload('myCanvas');
-                                                            setTimeout(() => {
-                                                                var winners = ret.map(item => [item.name, item.phone]);
-                                                                localStorage.setItem(new Date().toString(), JSON.stringify({ prize: prizeLabel, winners: winners }));
-                                                                $('#main').addClass('mask');
-                                                            }, 300);
                                                         }
-                                                    }, 50); // Update speed every 50ms
-                                                }, spinDuration);                    }
+                    
+                                                        if (ret.length === 0) {
+                                                            $('#result').css('display', 'block').html(
+                                                                '<span style="width: 250px;">' +
+                                                                '<b style="font-size:32px;color:#d32f2f">Đã hết người</b><br>' +
+                                                                '<small style="font-size:20px;color:#555">已抽完</small>' +
+                                                                '</span>'
+                                                            );
+                                                            this.running = false; // Allow new spin
+                                                            return;
+                                                        }
+                    
+                                                        renderWinners(ret, prizeLabel);
+                                                        this.showResult = true;
+                                                        this.showBackButton = true;
+                                                        TagCanvas.Reload('myCanvas');
+                                                        setTimeout(() => {
+                                                            var winners = ret.map(item => [item.name, item.phone]);
+                                                            localStorage.setItem(new Date().toString(), JSON.stringify({ prize: prizeLabel, winners: winners }));
+                                                            $('#main').addClass('mask');
+                                                        }, 300);
+                                                    }
+                                                }, 50); // Update speed every 50ms
+                                            }, spinDuration);
+                                        },
+                                        editQuantity: function(item, index) {
+                                            if (this.running) return; // Don't allow editing while spinning
+                    
+                                            var currentVal = item.value;
+                                            var newVal = prompt(`Nhập số lượng mới cho giải "${item.label}":`, currentVal);
+                    
+                                            if (newVal !== null) { // If user didn't cancel prompt
+                                                var newQuantity = parseInt(newVal, 10);
+                                                if (!isNaN(newQuantity) && newQuantity >= 0) {
+                                                    item.value = newQuantity;
+                                                    
+                                                    // If quantity is now > 0, reset the 'done' status
+                                                    if (newQuantity > 0) {
+                                                        item.done = false;
+                                                    }
+                                                } else {
+                                                    alert('Vui lòng nhập một số hợp lệ.');
+                                                }
+                                            }
+                                        }
                 }
             });
         })();
