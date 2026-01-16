@@ -625,6 +625,14 @@
             <button onclick="closeResetAlert()" style="margin-left:10px;">Hủy</button>
         </div>
     </div>
+
+    <div id="noPrizeAlert" class="alert-mask" style="display:none">
+        <div class="alert-box">
+            <h3>Thông báo</h3>
+            <p>Vui lòng chọn giải thưởng trước khi quay!<br>请先选择奖项！</p>
+            <button onclick="closeNoPrizeAlert()">OK</button>
+        </div>
+    </div>
     <!-- Thêm nhạc nền tại đây -->
     <audio id="bgMusic" src="audio/tatNien2024(30s).mp3" loop></audio>
 
@@ -681,21 +689,20 @@
         document.addEventListener('keydown', function (e) {
             if (e.code === 'Enter' || e.code === 'Space') {
                 e.preventDefault();
-                const homeBtn = document.querySelector('.home-btn');
-                if (homeBtn) {
-                    homeBtn.style.display = 'flex'; // tránh page scroll
-                }
-
                 const home = document.getElementById('home-screen');
                 if (home && home.style.display !== 'none') {
                     home.style.display = 'none';
                     return;
                 }
-                window.appVue.startLottery();                   // ★ gọi chung 1 hàm
+                
+                // Check if 'Quay lại' button is visible (i.e., showBackButton is true)
+                if (window.appVue && window.appVue.showBackButton) {
+                    window.appVue.confirmResult();
+                } else if (window.appVue) { // Otherwise, assume 'BẮT ĐẦU' is visible
+                    window.appVue.startLottery();                   // ★ gọi chung 1 hàm
+                }
             }
         });
-
-
     </script>
 
 
@@ -930,6 +937,10 @@
                         document.getElementById('current-prize-title').style.color = '#C6965D';
                     },
                     startLottery: function () {
+                        if (this.selectedIndex === null) {
+                            showNoPrizeAlert();
+                            return;
+                        }
                         if (this.running || needConfirm) return;
 
                         // Basic checks from old toggle function
@@ -1093,6 +1104,12 @@
         function closeAlert() {
             document.getElementById('customAlert').style.display = 'none';
         }
+        function showNoPrizeAlert() {
+            document.getElementById('noPrizeAlert').style.display = 'flex';
+        }
+        function closeNoPrizeAlert() {
+            document.getElementById('noPrizeAlert').style.display = 'none';
+        }
         function showResetAlert() {
             document.getElementById('customResetAlert').style.display = 'flex';
         }
@@ -1180,27 +1197,41 @@
         const resetButton = document.querySelector('.btn-reset');
         const contextMenu = document.getElementById('custom-context-menu');
 
+        // Function to display the context menu
+        function displayContextMenu(targetButton) {
+            if (!targetButton || !contextMenu) return;
+
+            const rect = targetButton.getBoundingClientRect();
+
+            contextMenu.style.display = 'block'; // Show it first to get its dimensions
+            const menuHeight = contextMenu.offsetHeight;
+            
+            // Position above the button, aligned left, and match width
+            contextMenu.style.top = `${rect.top - menuHeight}px`;
+            contextMenu.style.left = `${rect.left}px`;
+            contextMenu.style.width = `${rect.width}px`;
+        }
+
         if (resetButton && contextMenu) {
+            // Right-click event
             resetButton.addEventListener('contextmenu', function(event) {
                 event.preventDefault();
+                displayContextMenu(event.currentTarget);
+            });
 
-                const rect = event.currentTarget.getBoundingClientRect();
-
-                // Position and show context menu
-                contextMenu.style.display = 'block'; // Show it first to get its dimensions
-                const menuHeight = contextMenu.offsetHeight;
-                
-                contextMenu.style.top = `${rect.top - menuHeight}px`;
-                contextMenu.style.left = `${rect.left}px`;
-                contextMenu.style.width = `${rect.width}px`; // Match button width
+            // Keyboard event (Space or Enter)
+            resetButton.addEventListener('keydown', function(event) {
+                if (event.code === 'Enter' || event.code === 'Space') {
+                    event.preventDefault();
+                    displayContextMenu(event.currentTarget);
+                }
             });
         }
 
         // Hide menu on any left-click
         document.addEventListener('click', function(event) {
             if (contextMenu && contextMenu.style.display === 'block') {
-                // Ensure we are not clicking inside the menu itself
-                if (!contextMenu.contains(event.target)) {
+                if (!contextMenu.contains(event.target) && !resetButton.contains(event.target)) {
                     contextMenu.style.display = 'none';
                 }
             }
