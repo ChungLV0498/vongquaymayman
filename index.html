@@ -533,18 +533,64 @@
         }
 
         .result-btn {
-            position: fixed;
-            top: 25px;
-            right: 1px;
-            z-index: 20000;
+            display: none !important;
         }
 
         .home-btn {
-            display: none;
-            position: fixed;
-            top: 5px;
-            right: 1px;
-            z-index: 20000;
+            display: none !important;
+        }
+
+        .context-menu {
+            position: absolute;
+            background: linear-gradient(135deg, #2196f3, #03a9f4);
+            /* Matching button color */
+            z-index: 30000;
+            border-radius: 15px 15px 0 0;
+            /* Rounded top corners */
+            padding: 0;
+            overflow: hidden;
+            /* Ensures content respects border-radius */
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2);
+            /* Shadow to lift it off the page */
+        }
+
+        .context-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .context-menu ul li {
+            text-align: center;
+        }
+
+        .context-menu ul li:first-child {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            /* Separator */
+        }
+
+        .context-menu ul li:hover {
+            background-color: #03a9f4;
+            /* Hover effect */
+        }
+
+        .context-menu ul li a {
+            text-decoration: none;
+            color: white;
+            display: block;
+            padding: 10px 15px;
+        }
+
+        .context-menu ul li a .vi {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .context-menu ul li a .cn {
+            display: block;
+            font-size: 12px;
+            opacity: 0.85;
         }
     </style>
 </head>
@@ -1121,6 +1167,53 @@
             查看结果
         </button>
     </div>
+
+    <div id="custom-context-menu" class="context-menu" style="display: none;">
+        <ul>
+            <li><a href="./result.html" target="_blank"><span class="vi">Kết quả</span><span class="cn">获奖名单</span></a></li>
+            <li><a href="#" onclick="showHome(); document.getElementById('custom-context-menu').style.display='none'; return false;"><span class="vi">Trang chủ</span><span class="cn">首页</span></a></li>
+        </ul>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const resetButton = document.querySelector('.btn-reset');
+        const contextMenu = document.getElementById('custom-context-menu');
+
+        if (resetButton && contextMenu) {
+            resetButton.addEventListener('contextmenu', function(event) {
+                event.preventDefault();
+
+                const rect = event.currentTarget.getBoundingClientRect();
+
+                // Position and show context menu
+                contextMenu.style.display = 'block'; // Show it first to get its dimensions
+                const menuHeight = contextMenu.offsetHeight;
+                
+                contextMenu.style.top = `${rect.top - menuHeight}px`;
+                contextMenu.style.left = `${rect.left}px`;
+                contextMenu.style.width = `${rect.width}px`; // Match button width
+            });
+        }
+
+        // Hide menu on any left-click
+        document.addEventListener('click', function(event) {
+            if (contextMenu && contextMenu.style.display === 'block') {
+                // Ensure we are not clicking inside the menu itself
+                if (!contextMenu.contains(event.target)) {
+                    contextMenu.style.display = 'none';
+                }
+            }
+        });
+
+        // Hide menu on any right-click outside the button that spawned it
+        document.addEventListener('contextmenu', function(event) {
+            if (contextMenu && !resetButton.contains(event.target)) {
+                contextMenu.style.display = 'none';
+            }
+        });
+    });
+    </script>
 
 </body>
 
