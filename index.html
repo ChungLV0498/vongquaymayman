@@ -6,11 +6,12 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0" />
-    <title>FIT_TE</title>
+    <title>FIT_FAD_R&D</title>
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/wall.css">
     <style type="text/css">
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+
         body,
         html {
             width: 100%;
@@ -121,8 +122,10 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            align-items: center; /* Center items vertically */
-            align-content: center; /* Pack rows together */
+            align-items: center;
+            /* Center items vertically */
+            align-content: center;
+            /* Pack rows together */
             width: 100%;
             height: 100%;
             padding: 20px;
@@ -132,9 +135,10 @@
         .prize-title {
             font-size: 45px;
             font-weight: bold;
-            color: #ffeb3b; /* Gold color */
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
+            color: '#b0f876',
+                /* LemonChiffon for high contrast */
+                /* text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px; */
         }
 
         .winner-item-text-only {
@@ -146,14 +150,16 @@
             box-shadow: none;
             padding: 0;
             text-align: center;
-            margin: 5px; /* Added margin for spacing */
+            margin: 5px;
+            /* Added margin for spacing */
         }
 
         .winner-name {
             background: transparent;
             box-shadow: none;
             border-radius: 0;
-            color: #FFFACD; /* LemonChiffon for high contrast */
+            color: #fbff00;
+            /* LemonChiffon for high contrast */
             font-weight: bold;
             font-family: 'Dancing Script', cursive;
             font-size: 30px;
@@ -167,8 +173,10 @@
             background: transparent;
             box-shadow: none;
             border-radius: 0;
-            color: #FFF8DC; /* Cornsilk for high contrast */
-            font-size: 27px; /* Increased by 1.5x from 18px */
+            color: #fbff00;
+            /* Cornsilk for high contrast */
+            font-size: 27px;
+            /* Increased by 1.5x from 18px */
             font-family: 'Dancing Script', cursive;
             width: auto;
             padding: 2px;
@@ -179,13 +187,18 @@
         /* 1 người */
         .single-winner {
             /* grid-template-columns: 1fr; */
-            font-size: 4rem; /* Larger base font for single winner */
+            font-size: 4rem;
+            /* Larger base font for single winner */
         }
+
         .single-winner .winner-name {
-            font-size: 8vw; /* Very large font for name */
+            font-size: 8vw;
+            /* Very large font for name */
         }
+
         .single-winner .winner-phone {
-            font-size: 7.5vw; /* Increased by 1.5x from 5vw */
+            font-size: 7.5vw;
+            /* Increased by 1.5x from 5vw */
         }
 
         /* 2 người */
@@ -194,12 +207,16 @@
             grid-template-rows: repeat(2, 1fr); */
             flex-direction: column;
         }
+
         .two-winners .winner-name {
             font-size: 6vw;
         }
+
         .two-winners .winner-phone {
-            font-size: 4.5vw; /* Increased by 1.5x from 3vw */
+            font-size: 4.5vw;
+            /* Increased by 1.5x from 3vw */
         }
+
         .two-winners .winner-item-text-only {
             margin-bottom: 10px;
         }
@@ -212,16 +229,21 @@
 
         .eight-winners .winner-item-text-only,
         .ten-winners .winner-item-text-only {
-            flex: 0 1 45%; /* Create a 2-column layout */
-            margin-bottom: 20px; /* Increased vertical spacing between rows */
+            flex: 0 1 45%;
+            /* Create a 2-column layout */
+            margin-bottom: 20px;
+            /* Increased vertical spacing between rows */
         }
+
         .eight-winners .winner-name,
         .ten-winners .winner-name {
             font-size: 3.5rem;
         }
+
         .eight-winners .winner-phone,
         .ten-winners .winner-phone {
-            font-size: 2.625rem; /* Increased by 1.5x from 1.75rem */
+            font-size: 2.625rem;
+            /* Increased by 1.5x from 1.75rem */
         }
 
         /* 10 người */
@@ -229,11 +251,12 @@
             /* grid-template-columns: repeat(2, 1fr);
             grid-template-rows: repeat(5, 1fr); */
         }
-        
+
         /* Nhiều người (mặc định) */
         .multiple-winners {
             /* grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
         }
+
         #home-screen {
             position: fixed;
             inset: 0;
@@ -266,11 +289,15 @@
             top: 5%;
             left: 50%;
             transform: translateX(-50%);
-            color: #FFD700; /* Gold color */
-            font-size: 4rem;
+            font-size: 5rem;
             font-weight: bold;
             font-family: 'Dancing Script', cursive;
-            text-shadow: 0 0 10px black, 0 0 20px #8B0000; /* DarkRed shadow for depth */
+
+            /* Thêm dòng này để đổi màu chữ */
+            color: #fbff00;
+
+            /* Giữ nguyên shadow để chữ nổi bật trên nền tối */
+            text-shadow: 0 0 10px black, 0 0 20px #fbff00;
             z-index: 100;
             text-align: center;
             white-space: nowrap;
@@ -520,7 +547,6 @@
             right: 1px;
             z-index: 20000;
         }
-
     </style>
 </head>
 
@@ -565,8 +591,8 @@
     <div id="tools" class="tools">
         <!-- BÊN TRÁI: CÁC GIẢI -->
         <div class="tools-left">
-            <button v-for="(item, index) in btns" @click="onClick(item, index)" @contextmenu.prevent="editQuantity(item, index)" class="pure-button"
-                :disabled="item.done" :class="{ 'button-error': selectedIndex === index,
+            <button v-for="(item, index) in btns" @click="onClick(item, index)"
+                @contextmenu.prevent="editQuantity(item, index)" class="pure-button" :disabled="item.done" :class="{ 'button-error': selectedIndex === index,
                   'button-secondary': item.done }" style="line-height:1.2;width: 140px;padding:3px 0;">
                 <div style="font-size:13px;font-weight:bold">{{ item.label }}</div>
                 <div style="font-size:11px;color:#444">{{ item.cn }}</div>
@@ -582,11 +608,12 @@
                 <span class="vi">Quay lại</span>
                 <span class="cn">返回</span>
             </button>
-            <button v-if="!showBackButton" class="pure-button btn-main btn-start" @click.stop="startLottery" :disabled="running">
+            <button v-if="!showBackButton" class="pure-button btn-main btn-start" @click.stop="startLottery"
+                :disabled="running">
                 <span class="vi">{{ running ? 'ĐANG QUAY...' : 'BẮT ĐẦU' }}</span>
                 <span class="cn">{{ running ? '抽奖中...' : '开始' }}</span>
             </button>
-             <button v-else disabled class="pure-button btn-main btn-start">
+            <button v-else disabled class="pure-button btn-main btn-start">
                 <span class="vi">BẮT ĐẦU</span>
                 <span class="cn">开始</span>
             </button>
@@ -728,8 +755,7 @@
                     containerClass += ' multiple-winners';
                 }
 
-                let html = `<div class="prize-title">${prizeLabel}</div>`;
-                html += `<div class="${containerClass}">`;
+                let html = `<div class="${containerClass}">`;
 
                 ret.forEach(m => {
                     html += `
@@ -747,7 +773,7 @@
                 $('#main').addClass('mask');
                 needConfirm = true; // 🔒 khóa quay
 
-                 // Thêm hiệu ứng pháo hoa
+                // Thêm hiệu ứng pháo hoa
                 createConfetti();
             }
 
@@ -798,13 +824,13 @@
                     currentPrizeIndex: 0, // Giải hiện tại đang chờ quay
                     highlightInterval: null,
                     btns: [
-                        { label: 'GIẢI ĐẶC BIỆT', cn: '特别奖', value: 1, done: false },
-                        { label: 'GIẢI NHẤT', cn: '一等奖', value: 1, done: false },
-                        { label: 'GIẢI NHÌ', cn: '二等奖', value: 2, done: false },
-                        { label: 'GIẢI BA', cn: '三等奖', value: 8, done: false },
-                        { label: 'KHUYẾN KHÍCH', cn: '鼓励奖', value: 20, done: false },
-                        { label: 'KHÍCH LỆ', cn: '安慰奖', value: 50, done: false },
-                        { label: 'GIẢI BONUS', cn: '奖金', value: 10, done: false }
+                        { label: 'Đặc Biệt', cn: '特别奖', value: 1, done: false },
+                        { label: 'Giải Nhất', cn: '一等奖', value: 1, done: false },
+                        { label: 'Giải Nhì', cn: '二等奖', value: 2, done: false },
+                        { label: 'Giải Ba', cn: '三等奖', value: 8, done: false },
+                        { label: 'Khuyến Khích', cn: '鼓励奖', value: 20, done: false },
+                        { label: 'Khích Lệ', cn: '安慰奖', value: 50, done: false },
+                        { label: 'Giải Bonus', cn: '奖金', value: 10, done: false }
                     ]
                 }
                 ,
@@ -824,11 +850,12 @@
                         if (lastPrize && !lastPrize.done) {
                             this.selectedIndex = index;
                             this.selected = Math.min(lastPrize.value, 10);
+                            document.getElementById('current-prize-title').innerHTML = lastPrize.label + ' - ' + lastPrize.cn;
                         }
                     }
                 },
                 methods: {
-                    confirmResult: function() {
+                    confirmResult: function () {
                         document.getElementById('result').style.display = 'none';
                         document.getElementById('main').classList.remove('mask');
 
@@ -850,106 +877,107 @@
                         this.selected = Math.min(item.value, 10);
                         this.selectedIndex = index;
                         localStorage.setItem('lastSelectedIndex', index);
+                        document.getElementById('current-prize-title').innerHTML = item.label + ' - ' + item.cn;
                     },
-                                        startLottery: function () {
-                                            if (this.running || needConfirm) return;
-                    
-                                            // Basic checks from old toggle function
-                                            if (this.selectedIndex !== null) {
-                                                var currentPrize = this.btns[this.selectedIndex];
-                                                if (currentPrize.value <= 0) {
-                                                    showAlert();
-                                                    return;
-                                                }
-                                                this.selected = Math.min(currentPrize.value, 10);
-                                            } else {
-                                                if (this.selected === 0) {
-                                                    this.selected = 1;
-                                                }
-                                            }
-                    
-                                            // --- Start Spinning ---
-                                            this.running = true;
-                                            $('#result').css('display', 'none');
-                                            $('#main').removeClass('mask');
-                    
-                                            bgMusic.currentTime = 0;
-                                            bgMusic.play();
-                                            TagCanvas.SetSpeed('myCanvas', [5, 1]);
-                    
-                                            // --- Set Timeout to start the slowdown process ---
-                                            var spinDuration = 5000; // 5 seconds at full speed
-                                            setTimeout(() => {
-                                                // --- Start Gradual Slowdown ---
-                                                var currentSpeedX = 5;
-                                                var currentSpeedY = 1;
-                                                var slowdownInterval = setInterval(() => {
-                                                    currentSpeedX *= 0.95; // Exponential decay factor
-                                                    currentSpeedY *= 0.95;
-                                                    TagCanvas.SetSpeed('myCanvas', [currentSpeedX, currentSpeedY]);
-                    
-                                                    // Stop when speed is negligible
-                                                    if (Math.abs(currentSpeedX) < 0.05 && Math.abs(currentSpeedY) < 0.05) {
-                                                        clearInterval(slowdownInterval);
-                                                        TagCanvas.SetSpeed('myCanvas', [0, 0]); // Full stop
-                    
-                                                        // --- Officially End Spin ---
-                                                        bgMusic.pause();
-                                                        var ret = lottery(this.selected);
-                                                        var prizeLabel = this.selectedIndex !== null ? this.btns[this.selectedIndex].label : "GIẢI PHẦN THƯỞNG";
-                    
-                                                        if (this.selectedIndex !== null) {
-                                                            var prize = this.btns[this.selectedIndex];
-                                                            prize.value -= this.selected;
-                                                            if (prize.value <= 0) {
-                                                                prize.done = true;
-                                                            }
-                                                        }
-                    
-                                                        if (ret.length === 0) {
-                                                            $('#result').css('display', 'block').html(
-                                                                '<span style="width: 250px;">' +
-                                                                '<b style="font-size:32px;color:#d32f2f">Đã hết người</b><br>' +
-                                                                '<small style="font-size:20px;color:#555">已抽完</small>' +
-                                                                '</span>'
-                                                            );
-                                                            this.running = false; // Allow new spin
-                                                            return;
-                                                        }
-                    
-                                                        renderWinners(ret, prizeLabel);
-                                                        this.showResult = true;
-                                                        this.showBackButton = true;
-                                                        TagCanvas.Reload('myCanvas');
-                                                        setTimeout(() => {
-                                                            var winners = ret.map(item => [item.name, item.phone]);
-                                                            localStorage.setItem(new Date().toString(), JSON.stringify({ prize: prizeLabel, winners: winners }));
-                                                            $('#main').addClass('mask');
-                                                        }, 300);
-                                                    }
-                                                }, 50); // Update speed every 50ms
-                                            }, spinDuration);
-                                        },
-                                        editQuantity: function(item, index) {
-                                            if (this.running) return; // Don't allow editing while spinning
-                    
-                                            var currentVal = item.value;
-                                            var newVal = prompt(`Nhập số lượng mới cho giải "${item.label}":`, currentVal);
-                    
-                                            if (newVal !== null) { // If user didn't cancel prompt
-                                                var newQuantity = parseInt(newVal, 10);
-                                                if (!isNaN(newQuantity) && newQuantity >= 0) {
-                                                    item.value = newQuantity;
-                                                    
-                                                    // If quantity is now > 0, reset the 'done' status
-                                                    if (newQuantity > 0) {
-                                                        item.done = false;
-                                                    }
-                                                } else {
-                                                    alert('Vui lòng nhập một số hợp lệ.');
-                                                }
-                                            }
+                    startLottery: function () {
+                        if (this.running || needConfirm) return;
+
+                        // Basic checks from old toggle function
+                        if (this.selectedIndex !== null) {
+                            var currentPrize = this.btns[this.selectedIndex];
+                            if (currentPrize.value <= 0) {
+                                showAlert();
+                                return;
+                            }
+                            this.selected = Math.min(currentPrize.value, 10);
+                        } else {
+                            if (this.selected === 0) {
+                                this.selected = 1;
+                            }
+                        }
+
+                        // --- Start Spinning ---
+                        this.running = true;
+                        $('#result').css('display', 'none');
+                        $('#main').removeClass('mask');
+
+                        bgMusic.currentTime = 0;
+                        bgMusic.play();
+                        TagCanvas.SetSpeed('myCanvas', [5, 1]);
+
+                        // --- Set Timeout to start the slowdown process ---
+                        var spinDuration = 5000; // 5 seconds at full speed
+                        setTimeout(() => {
+                            // --- Start Gradual Slowdown ---
+                            var currentSpeedX = 5;
+                            var currentSpeedY = 1;
+                            var slowdownInterval = setInterval(() => {
+                                currentSpeedX *= 0.95; // Exponential decay factor
+                                currentSpeedY *= 0.95;
+                                TagCanvas.SetSpeed('myCanvas', [currentSpeedX, currentSpeedY]);
+
+                                // Stop when speed is negligible
+                                if (Math.abs(currentSpeedX) < 0.05 && Math.abs(currentSpeedY) < 0.05) {
+                                    clearInterval(slowdownInterval);
+                                    TagCanvas.SetSpeed('myCanvas', [0, 0]); // Full stop
+
+                                    // --- Officially End Spin ---
+                                    bgMusic.pause();
+                                    var ret = lottery(this.selected);
+                                    var prizeLabel = this.selectedIndex !== null ? this.btns[this.selectedIndex].label : "GIẢI PHẦN THƯỞNG";
+
+                                    if (this.selectedIndex !== null) {
+                                        var prize = this.btns[this.selectedIndex];
+                                        prize.value -= this.selected;
+                                        if (prize.value <= 0) {
+                                            prize.done = true;
                                         }
+                                    }
+
+                                    if (ret.length === 0) {
+                                        $('#result').css('display', 'block').html(
+                                            '<span style="width: 250px;">' +
+                                            '<b style="font-size:32px;color:#d32f2f">Đã hết người</b><br>' +
+                                            '<small style="font-size:20px;color:#555">已抽完</small>' +
+                                            '</span>'
+                                        );
+                                        this.running = false; // Allow new spin
+                                        return;
+                                    }
+
+                                    renderWinners(ret, prizeLabel);
+                                    this.showResult = true;
+                                    this.showBackButton = true;
+                                    TagCanvas.Reload('myCanvas');
+                                    setTimeout(() => {
+                                        var winners = ret.map(item => [item.name, item.phone]);
+                                        localStorage.setItem(new Date().toString(), JSON.stringify({ prize: prizeLabel, winners: winners }));
+                                        $('#main').addClass('mask');
+                                    }, 300);
+                                }
+                            }, 50); // Update speed every 50ms
+                        }, spinDuration);
+                    },
+                    editQuantity: function (item, index) {
+                        if (this.running) return; // Don't allow editing while spinning
+
+                        var currentVal = item.value;
+                        var newVal = prompt(`Nhập số lượng mới cho giải "${item.label}":`, currentVal);
+
+                        if (newVal !== null) { // If user didn't cancel prompt
+                            var newQuantity = parseInt(newVal, 10);
+                            if (!isNaN(newQuantity) && newQuantity >= 0) {
+                                item.value = newQuantity;
+
+                                // If quantity is now > 0, reset the 'done' status
+                                if (newQuantity > 0) {
+                                    item.done = false;
+                                }
+                            } else {
+                                alert('Vui lòng nhập một số hợp lệ.');
+                            }
+                        }
+                    }
                 }
             });
         })();
