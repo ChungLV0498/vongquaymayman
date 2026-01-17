@@ -550,8 +550,9 @@
         /* BÊN TRÁI */
         .tools-left {
             display: flex;
-            /* gap: 10px; */
             flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 10px;
             max-width: 65%;
         }
 
@@ -593,7 +594,7 @@
 
         .tools .pure-button {
             display: inline-block;
-            margin: 5px;
+            margin: 0;
             /* padding: 10px 0; */
             text-align: center;
             width: 150px;
@@ -726,10 +727,20 @@
     </div>
     <div id="tools" class="tools">
         <!-- BÊN TRÁI: CÁC GIẢI -->
-        <div class="tools-left">
-            <button v-for="(item, index) in btns" @click="onClick(item, index)"
-                @contextmenu.prevent="editQuantity(item, index)" class="pure-button" :disabled="item.done" :class="{ 'button-error': selectedIndex === index,
-                  'button-secondary': item.done }" style="line-height:1.2;width: 140px;padding:3px 0;">
+        <div class="tools-left" :style="{ visibility: showBackButton ? 'hidden' : 'visible' }">
+            <button v-for="(item) in topRowBtns" @click="onClick(item, item.originalIndex)"
+                @contextmenu.prevent="editQuantity(item, item.originalIndex)" class="pure-button" :disabled="item.done" :class="{ 'button-error': selectedIndex === item.originalIndex,
+                'button-secondary': item.done }" style="line-height:1.2;width: 140px;padding:3px 0;">
+                <div style="font-size:13px;font-weight:bold">{{ item.label }}</div>
+                <div style="font-size:11px;color:#444">{{ item.cn }}</div>
+                <div style="font-size:10px;margin-top:2px">
+                    {{ item.done ? 0 : item.value }}
+                </div>
+            </button>
+            <div style="flex-basis: 100%; height: 0;"></div>
+            <button v-for="(item) in bottomRowBtns" @click="onClick(item, item.originalIndex)"
+                @contextmenu.prevent="editQuantity(item, item.originalIndex)" class="pure-button" :disabled="item.done" :class="{ 'button-error': selectedIndex === item.originalIndex,
+                'button-secondary': item.done }" style="line-height:1.2;width: 140px;padding:3px 0;">
                 <div style="font-size:13px;font-weight:bold">{{ item.label }}</div>
                 <div style="font-size:11px;color:#444">{{ item.cn }}</div>
                 <div style="font-size:10px;margin-top:2px">
@@ -744,14 +755,10 @@
                 <span class="vi">Quay lại</span>
                 <span class="cn">返回</span>
             </button>
-            <button v-if="!showBackButton" class="pure-button btn-main btn-start" @click.stop="startLottery"
+            <button v-else class="pure-button btn-main btn-start" @click.stop="startLottery"
                 :disabled="running">
                 <span class="vi">{{ running ? 'ĐANG QUAY...' : 'BẮT ĐẦU' }}</span>
                 <span class="cn">{{ running ? '抽奖中...' : '开始' }}</span>
-            </button>
-            <button v-else disabled class="pure-button btn-main btn-start">
-                <span class="vi">BẮT ĐẦU</span>
-                <span class="cn">开始</span>
             </button>
             <button class="pure-button btn-reset" @click.stop="showResetAlert">
                 <span class="vi">CÀI LẠI</span>
@@ -989,8 +996,19 @@
                         { label: 'Khích Lệ', cn: '安慰奖', value: 50, done: false },
                         { label: 'Giải Bonus', cn: '奖金', value: 10, done: false }
                     ]
-                }
-                ,
+                },
+                computed: {
+                    topRowBtns: function () {
+                        return this.btns.slice(0, 3).map((item, index) => {
+                            return { ...item, originalIndex: index };
+                        });
+                    },
+                    bottomRowBtns: function () {
+                        return this.btns.slice(3).map((item, index) => {
+                            return { ...item, originalIndex: index + 3 };
+                        });
+                    }
+                },
                 mounted() {
                     canvas.innerHTML = createHTML();
                     TagCanvas.Start('myCanvas', '', {
