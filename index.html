@@ -252,6 +252,90 @@
             grid-template-rows: repeat(5, 1fr); */
         }
 
+        /* 3 người */
+        .three-winners .winner-item-text-only {
+            flex-basis: 45%;
+        }
+        .three-winners .winner-item-text-only:last-child {
+            flex-basis: 100%;
+        }
+        .three-winners .winner-name {
+            font-size: 5rem;
+        }
+        .three-winners .winner-phone {
+            font-size: 3.75rem;
+        }
+        .three-winners .winner-item-text-only:last-child .winner-name {
+            font-size: 4.5rem;
+        }
+        .three-winners .winner-item-text-only:last-child .winner-phone {
+            font-size: 3.375rem;
+        }
+
+        /* 4 người */
+        .four-winners .winner-item-text-only {
+            flex-basis: 45%;
+        }
+        .four-winners .winner-name {
+            font-size: 4.5rem;
+        }
+        .four-winners .winner-phone {
+            font-size: 3.375rem;
+        }
+
+        /* 5 người */
+        .five-winners .winner-item-text-only {
+            flex-basis: 45%;
+        }
+        .five-winners .winner-item-text-only:last-child {
+            flex-basis: 100%;
+        }
+        .five-winners .winner-name {
+            font-size: 4rem;
+        }
+        .five-winners .winner-phone {
+            font-size: 3rem;
+        }
+        
+        /* 6 người */
+        .six-winners .winner-item-text-only {
+            flex-basis: 45%;
+        }
+        .six-winners .winner-name {
+            font-size: 3.8rem;
+        }
+        .six-winners .winner-phone {
+            font-size: 2.85rem;
+        }
+
+        /* 7 người */
+        .seven-winners .winner-item-text-only {
+            flex-basis: 45%;
+        }
+        .seven-winners .winner-item-text-only:last-child {
+            flex-basis: 100%;
+        }
+        .seven-winners .winner-name {
+            font-size: 3.6rem;
+        }
+        .seven-winners .winner-phone {
+            font-size: 2.7rem;
+        }
+
+        /* 9 người */
+        .nine-winners .winner-item-text-only {
+            flex-basis: 45%;
+        }
+        .nine-winners .winner-item-text-only:last-child {
+            flex-basis: 100%;
+        }
+        .nine-winners .winner-name {
+            font-size: 3.5rem;
+        }
+        .nine-winners .winner-phone {
+            font-size: 2.625rem;
+        }
+
         /* Nhiều người (mặc định) */
         .multiple-winners {
             /* grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
@@ -798,8 +882,20 @@
                     containerClass += ' single-winner';
                 } else if (winnerCount === 2) {
                     containerClass += ' two-winners';
+                } else if (winnerCount === 3) {
+                    containerClass += ' three-winners';
+                } else if (winnerCount === 4) {
+                    containerClass += ' four-winners';
+                } else if (winnerCount === 5) {
+                    containerClass += ' five-winners';
+                } else if (winnerCount === 6) {
+                    containerClass += ' six-winners';
+                } else if (winnerCount === 7) {
+                    containerClass += ' seven-winners';
                 } else if (winnerCount === 8) {
                     containerClass += ' eight-winners';
+                } else if (winnerCount === 9) {
+                    containerClass += ' nine-winners';
                 } else if (winnerCount === 10) {
                     containerClass += ' ten-winners';
                 } else if (winnerCount > 1) {
