@@ -1,0 +1,168 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Dancing+Script:wght@700&display=swap');
+
+body, html {
+    width: 100%;
+    min-height: 100%;
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: #0f2027;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #2c5364, #203a43, #0f2027);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #2c5364, #203a43, #0f2027); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+/* --- Global Scrollbar --- */
+::-webkit-scrollbar {
+    width: 10px;
+    background-color: #0f2027;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 215, 0, 0.6);
+    border-radius: 10px;
+    border: 2px solid #0f2027;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 215, 0, 0.8);
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.header h1 {
+    font-family: 'Roboto', sans-serif; /* Changed to Roboto */
+    font-size: 5.5rem;
+    font-weight: 700;
+    color: #ffffff; /* Changed to white */
+    text-transform: uppercase; /* Keeping uppercase for prominence */
+    letter-spacing: 2px; /* Increased letter spacing slightly */
+    margin-bottom: 0;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Adjusted shadow for white text */
+}
+
+.header p {
+    font-size: 1.5rem;
+    color: #e0e0e0;
+    font-weight: 300;
+    margin-top: 15px; /* Added margin to prevent overlap */
+    opacity: 0.8;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+}
+
+.prize-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    border-radius: 20px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden; /* To contain the title background */
+}
+
+.prize-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+.prize-title {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px 20px;
+    margin: 0;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.winners-list {
+    list-style-type: decimal;
+    list-style-position: inside;
+    padding: 20px;
+    margin: 0;
+}
+
+.winner-item {
+    background: rgba(0, 0, 0, 0.15);
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+    color: #f5f5f5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    border-left: 4px solid #ffd700;
+}
+
+.winner-item:last-child {
+    margin-bottom: 0;
+}
+
+.winner-item:hover {
+    background: rgba(0, 0, 0, 0.3);
+    transform: translateX(5px);
+}
+
+.winner-details {
+    display: contents; /* Allows flex properties of parent to apply */
+}
+
+.winner-name {
+    font-weight: 400;
+    flex-grow: 1;
+    padding-left: 10px;
+}
+
+.winner-id {
+    font-weight: 300;
+    color: #bdbdbd;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+
+
+/* --- Responsive Design --- */
+@media (max-width: 1200px) {
+    .results-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .header h1 {
+        font-size: 4.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .results-grid {
+        grid-template-columns: 1fr;
+    }
+    .header h1 {
+        font-size: 3.5rem;
+    }
+    .header p {
+        font-size: 1.2rem;
+    }
+    .container {
+        padding: 20px 15px;
+    }
+}
