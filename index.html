@@ -1027,7 +1027,7 @@
                             this.selectedIndex = index;
                             this.selected = Math.min(lastPrize.value, 10);
                             document.getElementById('current-prize-title').innerHTML = lastPrize.label + ' - ' + lastPrize.cn;
-                            document.getElementById('current-prize-title').style.color = '#C6965D';
+                            document.getElementById('current-prize-title').style.color = '#FFFFFF';
                             if (lastPrize.image) {
                                 document.getElementById('main').style.backgroundImage = 'url(' + lastPrize.image + ')';
                             }
@@ -1044,7 +1044,7 @@
 
                                     needConfirm = false;
                                     TagCanvas.SetSpeed('myCanvas', speed()); // Reset to random speed
-                                    document.getElementById('current-prize-title').style.color = '#C6965D';                    },
+                                    document.getElementById('current-prize-title').style.color = '#FFFFFF';                    },
                     showResetAlert: function () {
                         showResetAlert();
                     },
@@ -1058,7 +1058,7 @@
                         this.selectedIndex = index;
                         localStorage.setItem('lastSelectedIndex', index);
                         document.getElementById('current-prize-title').innerHTML = item.label + ' - ' + item.cn;
-                        document.getElementById('current-prize-title').style.color = '#C6965D';
+                        document.getElementById('current-prize-title').style.color = '#FFFFFF';
                         if (item.image) {
                             document.getElementById('main').style.backgroundImage = 'url(' + item.image + ')';
                         } else {
