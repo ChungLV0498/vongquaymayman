@@ -987,14 +987,15 @@
                     showBackButton: false,
                     currentPrizeIndex: 0, // Giải hiện tại đang chờ quay
                     highlightInterval: null,
+                    fireworksInterval: null,
                     btns: [
-                        { label: 'Đặc Biệt', cn: '特别奖', value: 1, done: false },
-                        { label: 'Giải Nhất', cn: '一等奖', value: 1, done: false },
-                        { label: 'Giải Nhì', cn: '二等奖', value: 2, done: false },
-                        { label: 'Giải Ba', cn: '三等奖', value: 8, done: false },
-                        { label: 'Khuyến Khích', cn: '鼓励奖', value: 20, done: false },
-                        { label: 'Khích Lệ', cn: '安慰奖', value: 50, done: false },
-                        { label: 'Giải Bonus', cn: '奖金', value: 10, done: false }
+                        { label: 'Đặc Biệt', cn: '特别奖', value: 1, done: false, image: 'img/dac_biet.jpg' },
+                        { label: 'Giải Nhất', cn: '一等奖', value: 1, done: false, image: 'img/giai_nhat.jpg' },
+                        { label: 'Giải Nhì', cn: '二等奖', value: 2, done: false, image: 'img/giai_nhi.jpg' },
+                        { label: 'Giải Ba', cn: '三等奖', value: 8, done: false, image: 'img/giai_ba.jpg' },
+                        { label: 'Khuyến Khích', cn: '鼓励奖', value: 20, done: false, image: 'img/khuyen_khich.jpg' },
+                        { label: 'Khích Lệ', cn: '安慰奖', value: 50, done: false, image: 'img/khich_le.jpg' },
+                        { label: 'Giải Bonus', cn: '奖金', value: 10, done: false, image: 'img/bonus.jpg' }
                     ]
                 },
                 computed: {
@@ -1015,7 +1016,7 @@
                         textColour: null,
                         initial: speed(),
                         dragControl: 1,
-                        textHeight: 14
+                        textFont: 'bold 27px sans-serif'
                     });
 
                     var lastIndex = localStorage.getItem('lastSelectedIndex');
@@ -1027,6 +1028,9 @@
                             this.selected = Math.min(lastPrize.value, 10);
                             document.getElementById('current-prize-title').innerHTML = lastPrize.label + ' - ' + lastPrize.cn;
                             document.getElementById('current-prize-title').style.color = '#C6965D';
+                            if (lastPrize.image) {
+                                document.getElementById('main').style.backgroundImage = 'url(' + lastPrize.image + ')';
+                            }
                         }
                     }
                 },
@@ -1055,6 +1059,11 @@
                         localStorage.setItem('lastSelectedIndex', index);
                         document.getElementById('current-prize-title').innerHTML = item.label + ' - ' + item.cn;
                         document.getElementById('current-prize-title').style.color = '#C6965D';
+                        if (item.image) {
+                            document.getElementById('main').style.backgroundImage = 'url(' + item.image + ')';
+                        } else {
+                            document.getElementById('main').style.backgroundImage = 'url(img/icon-wall.jpg)';
+                        }
                     },
                     startLottery: function () {
                         // ENFORCE a prize selection
@@ -1159,20 +1168,22 @@
                             }, 50); 
                         }, spinDuration);
                     },
-                    editQuantity: function (item, index) {
-                        if (this.running) return; // Don't allow editing while spinning
+                    editQuantity: function (item, index) { // 'index' is the originalIndex
+                        if (this.running) return;
 
-                        var currentVal = item.value;
-                        var newVal = prompt(`Nhập số lượng mới cho giải "${item.label}":`, currentVal);
+                        const originalItem = this.btns[index]; // Get the REAL item from the source array
 
-                        if (newVal !== null) { // If user didn't cancel prompt
+                        var currentVal = originalItem.value;
+                        var newVal = prompt(`Nhập số lượng mới cho giải "${originalItem.label}":`, currentVal);
+
+                        if (newVal !== null) {
                             var newQuantity = parseInt(newVal, 10);
                             if (!isNaN(newQuantity) && newQuantity >= 0) {
-                                item.value = newQuantity;
-
-                                // If quantity is now > 0, reset the 'done' status
+                                originalItem.value = newQuantity; // Modify the original object
                                 if (newQuantity > 0) {
-                                    item.done = false;
+                                    originalItem.done = false; // Also modify the original
+                                } else {
+                                    originalItem.done = true;
                                 }
                             } else {
                                 alert('Vui lòng nhập một số hợp lệ.');
