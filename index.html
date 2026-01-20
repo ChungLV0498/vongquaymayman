@@ -847,7 +847,7 @@
             // };
             //tuanlg
 
-            var lottery = function (count) {
+            var lottery = function (count, prizeLabel) { // Added prizeLabel parameter
                 var list = canvas.getElementsByTagName('a');
                 var color = 'yellow';
 
@@ -860,6 +860,22 @@
                     .map(m => {
                         choosed[getKey(m)] = 1;
                         list[m.index].style.color = color;
+
+                        // Assign specific prize item if applicable
+                        if (appVue.prizeItems[prizeLabel]) {
+                            const availableItems = [];
+                            for (const item in appVue.prizeItems[prizeLabel]) {
+                                for (let i = 0; i < appVue.prizeItems[prizeLabel][item]; i++) {
+                                    availableItems.push(item);
+                                }
+                            }
+                            if (availableItems.length > 0) {
+                                const randomIndex = Math.floor(Math.random() * availableItems.length);
+                                const assignedItem = availableItems[randomIndex];
+                                m.prizeItem = assignedItem; // Add prizeItem to winner object
+                                appVue.prizeItems[prizeLabel][assignedItem]--; // Decrement count
+                            }
+                        }
 
                         // tự tạo đường dẫn ảnh theo phone
                         m.photo = 'img_webp/users/' + m.phone + '.webp'; // ảnh chính
@@ -914,7 +930,7 @@
                 ret.forEach(m => {
                     html += `
                         <div class="winner-item-text-only"> <!-- Changed class -->
-                            <span class="winner-name">${m.name}</span>
+                            <span class="winner-name">${m.name} ${m.prizeItem ? '(' + m.prizeItem + ')' : ''}</span>
                             <span class="winner-phone">${m.phone}</span>
                         </div>
                     `;
@@ -992,11 +1008,15 @@
                         { label: 'Đặc Biệt', cn: '特别奖', value: 1, done: false, image: 'img_webp/dac_biet.webp' },
                         { label: 'Giải Nhất', cn: '一等奖', value: 1, done: false, image: 'img_webp/giai_nhat.webp' },
                         { label: 'Giải Nhì', cn: '二等奖', value: 2, done: false, image: 'img_webp/giai_nhi.webp' },
-                        { label: 'Giải Ba', cn: '三等奖', value: 8, done: false, image: 'img_webp/giai_ba.webp' },
+                        { label: 'Giải Ba', cn: '三等奖', value: 9, done: false, image: 'img_webp/giai_ba.webp' },
                         { label: 'Khuyến Khích', cn: '鼓励奖', value: 20, done: false, image: 'img_webp/khuyen_khich.webp' },
                         { label: 'Khích Lệ', cn: '安慰奖', value: 50, done: false, image: 'img_webp/khich_le.webp' },
-                        { label: 'Giải Bonus', cn: '奖金', value: 10, done: false, image: 'img_webp/bonus.webp' }
-                    ]
+                        { label: 'Giải Bonus', cn: '奖金', value: 0, done: false, image: 'img_webp/bonus.webp' }
+                    ],
+                    prizeItems: {
+                        'Giải Ba': { 'Bàn Là': 4, 'Quạt': 5 },
+                        'Khuyến Khích': { 'Củ Sạc': 4, 'Sạc DP': 4, 'Nồi Inox': 4, 'Chảo': 4, 'Nồi Điện': 4 }
+                    }
                 },
                 computed: {
                     topRowBtns: function () {
@@ -1128,7 +1148,7 @@
 
                                     // --- Officially End Spin ---
                                     bgMusic.pause();
-                                    var ret = lottery(this.selected);
+                                    var ret = lottery(this.selected, prizeLabel);
                                     
                                     var finalPrizeLabel = "GIẢI PHẦN THƯỞNG"; // Default
                                     if (this.selectedIndex !== null) {
