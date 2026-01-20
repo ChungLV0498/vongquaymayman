@@ -682,7 +682,7 @@
 <body>
     <!-- ===== TRANG CHỦ ===== -->
     <div id="home-screen">
-        <img src="img/home.png" alt="Home Background" class="background-image">
+        <img src="img_webp/home.webp" alt="Home Background" class="background-image">
     </div>
 
 
@@ -862,7 +862,7 @@
                         list[m.index].style.color = color;
 
                         // tự tạo đường dẫn ảnh theo phone
-                        m.photo = 'img/users/' + m.phone + '.jpg'; // ảnh chính
+                        m.photo = 'img_webp/users/' + m.phone + '.webp'; // ảnh chính
 
                         return m;
                     });
@@ -989,13 +989,13 @@
                     highlightInterval: null,
                     fireworksInterval: null,
                     btns: [
-                        { label: 'Đặc Biệt', cn: '特别奖', value: 1, done: false, image: 'img/dac_biet.jpg' },
-                        { label: 'Giải Nhất', cn: '一等奖', value: 1, done: false, image: 'img/giai_nhat.jpg' },
-                        { label: 'Giải Nhì', cn: '二等奖', value: 2, done: false, image: 'img/giai_nhi.jpg' },
-                        { label: 'Giải Ba', cn: '三等奖', value: 8, done: false, image: 'img/giai_ba.jpg' },
-                        { label: 'Khuyến Khích', cn: '鼓励奖', value: 20, done: false, image: 'img/khuyen_khich.jpg' },
-                        { label: 'Khích Lệ', cn: '安慰奖', value: 50, done: false, image: 'img/khich_le.jpg' },
-                        { label: 'Giải Bonus', cn: '奖金', value: 10, done: false, image: 'img/bonus.jpg' }
+                        { label: 'Đặc Biệt', cn: '特别奖', value: 1, done: false, image: 'img_webp/dac_biet.webp' },
+                        { label: 'Giải Nhất', cn: '一等奖', value: 1, done: false, image: 'img_webp/giai_nhat.webp' },
+                        { label: 'Giải Nhì', cn: '二等奖', value: 2, done: false, image: 'img_webp/giai_nhi.webp' },
+                        { label: 'Giải Ba', cn: '三等奖', value: 8, done: false, image: 'img_webp/giai_ba.webp' },
+                        { label: 'Khuyến Khích', cn: '鼓励奖', value: 20, done: false, image: 'img_webp/khuyen_khich.webp' },
+                        { label: 'Khích Lệ', cn: '安慰奖', value: 50, done: false, image: 'img_webp/khich_le.webp' },
+                        { label: 'Giải Bonus', cn: '奖金', value: 10, done: false, image: 'img_webp/bonus.webp' }
                     ]
                 },
                 computed: {
@@ -1062,7 +1062,7 @@
                         if (item.image) {
                             document.getElementById('main').style.backgroundImage = 'url(' + item.image + ')';
                         } else {
-                            document.getElementById('main').style.backgroundImage = 'url(img/icon-wall.jpg)';
+                            document.getElementById('main').style.backgroundImage = 'url(img_webp/icon-wall.webp)';
                         }
                     },
                     startLottery: function () {
