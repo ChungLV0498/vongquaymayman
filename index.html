@@ -1180,7 +1180,7 @@
                                     this.showBackButton = true;
                                     TagCanvas.Reload('myCanvas');
                                     setTimeout(() => {
-                                        var winners = ret.map(item => [item.name, item.phone]);
+                                        var winners = ret.map(item => [item.name, item.phone, item.prizeItem]);
                                         localStorage.setItem(new Date().toString(), JSON.stringify({ prize: finalPrizeLabel, winners: winners }));
                                         $('#main').addClass('mask');
                                     }, 300);
