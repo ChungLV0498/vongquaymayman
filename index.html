@@ -858,16 +858,43 @@
 
             document.getElementById('main').appendChild(canvas);
             function renderWinners(ret, prizeLabel) {
-                console.log('Winners:', ret); 
+                console.log('Winners:', ret);
                 const winnerCount = ret.length;
                 let containerClass = 'winner-container';
 
-                if (winnerCount <= 4) {
-                    containerClass += ' four-winners';
-                } else if (winnerCount <= 8) {
-                    containerClass += ' eight-winners';
-                } else {
-                    containerClass += ' multiple-winners';
+                switch (winnerCount) {
+                    case 1:
+                        containerClass += ' single-winner';
+                        break;
+                    case 2:
+                        containerClass += ' two-winners';
+                        break;
+                    case 3:
+                        containerClass += ' three-winners';
+                        break;
+                    case 4:
+                        containerClass += ' four-winners';
+                        break;
+                    case 5:
+                        containerClass += ' five-winners';
+                        break;
+                    case 6:
+                        containerClass += ' six-winners';
+                        break;
+                    case 7:
+                        containerClass += ' seven-winners';
+                        break;
+                    case 8:
+                        containerClass += ' eight-winners';
+                        break;
+                    case 9:
+                        containerClass += ' nine-winners';
+                        break;
+                    case 10:
+                        containerClass += ' ten-winners';
+                        break;
+                    default:
+                        containerClass += ' multiple-winners';
                 }
 
                 let html = `<div class="${containerClass}">`;
@@ -885,7 +912,7 @@
 
                 $('#result').html(html).show();
                 $('#main').addClass('mask');
-                needConfirm = true; 
+                needConfirm = true;
 
                 document.getElementById('current-prize-title').innerHTML = prizeLabel;
                 document.getElementById('current-prize-title').style.color = '#f8ff8f';
