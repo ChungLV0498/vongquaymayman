@@ -44,7 +44,7 @@ var member = [
   { "phone": "V3120774", "name": "Dương Tân Sơn" },
   { "phone": "V3120799", "name": "Hà Bình Dương" },
   { "phone": "V3120874", "name": "Hoàng Mai Huy" },
-  { "phone": "V0200109", "name": "Giáp Thị Quyến" },
+  { "phone": "V0200109", "name": "Thân Thị Quyến" },
   { "phone": "V0218953", "name": "Nguyễn Thị Mai" },
   { "phone": "V0225421", "name": "Nguyễn Thị Hồng" },
   { "phone": "V3048628", "name": "Nguyễn Văn Quyền" },
