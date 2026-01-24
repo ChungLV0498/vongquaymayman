@@ -734,7 +734,7 @@
                 <div style="font-size:13px;font-weight:bold">{{ item.label }}</div>
                 <div style="font-size:11px;color:#444">{{ item.cn }}</div>
                 <div style="font-size:10px;margin-top:2px">
-                    {{ item.done ? 0 : item.value }}
+                    {{ getDisplayValue(item) }}
                 </div>
             </button>
             <div style="flex-basis: 100%; height: 0;"></div>
@@ -744,7 +744,7 @@
                 <div style="font-size:13px;font-weight:bold">{{ item.label }}</div>
                 <div style="font-size:11px;color:#444">{{ item.cn }}</div>
                 <div style="font-size:10px;margin-top:2px">
-                    {{ item.done ? 0 : item.value }}
+                    {{ getDisplayValue(item) }}
                 </div>
             </button>
         </div>
@@ -820,34 +820,8 @@
                 html.push('</ul>');
                 return html.join('');
             };
-            // var lottery = function (count) {
-            //     var list = canvas.getElementsByTagName('a');
-            //     var color = 'yellow';
-            //     var ret = member
-            //         .filter(function (m, index) {
-            //             m.index = index;
-            //             return !choosed[getKey(m)];
-            //         })
-            //         .map(function (m) {
-            //             return Object.assign({
-            //                 score: Math.random()
-            //             }, m);
-            //         })
-            //         .sort(function (a, b) {
-            //             return a.score - b.score;
-            //         })
-            //         .slice(0, count)
-            //         .map(function (m) {
-            //             choosed[getKey(m)] = 1;
-            //             list[m.index].style.color = color;
-            //             return m.name + '<br/>' + m.phone;
-            //         });
-            //     localStorage.setItem('choosed', JSON.stringify(choosed));
-            //     return ret;
-            // };
-            //tuanlg
 
-            var lottery = function (count, prizeLabel) { // Added prizeLabel parameter
+            var lottery = function (count, prizeLabel) { 
                 var list = canvas.getElementsByTagName('a');
                 var color = 'yellow';
 
@@ -861,34 +835,21 @@
                         choosed[getKey(m)] = 1;
                         list[m.index].style.color = color;
 
-                        // Assign specific prize item if applicable
-                        if (appVue.prizeItems[prizeLabel]) {
-                            const availableItems = [];
-                            for (const item in appVue.prizeItems[prizeLabel]) {
-                                for (let i = 0; i < appVue.prizeItems[prizeLabel][item]; i++) {
-                                    availableItems.push(item);
-                                }
-                            }
-                            if (availableItems.length > 0) {
-                                const randomIndex = Math.floor(Math.random() * availableItems.length);
-                                const assignedItem = availableItems[randomIndex];
-                                m.prizeItem = assignedItem; // Add prizeItem to winner object
-                                appVue.prizeItems[prizeLabel][assignedItem]--; // Decrement count
-                            }
+                        // Assign specific prize item if applicable based on sub-draw count
+                        if (appVue.prizeItems[prizeLabel] && Array.isArray(appVue.prizeItems[prizeLabel])) {
+                           const assignedItem = appVue.prizeItems[prizeLabel][appVue.currentSubDrawCount];
+                           if(assignedItem) {
+                               m.prizeItem = assignedItem;
+                           }
                         }
 
-                        // tự tạo đường dẫn ảnh theo phone
-                        m.photo = 'img_webp/users/' + m.phone + '.webp'; // ảnh chính
-
+                        m.photo = 'img_webp/users/' + m.phone + '.webp';
                         return m;
                     });
 
                 localStorage.setItem('choosed', JSON.stringify(choosed));
                 return ret;
             };
-
-
-
 
             var canvas = document.createElement('canvas');
             canvas.id = 'myCanvas';
@@ -897,31 +858,15 @@
 
             document.getElementById('main').appendChild(canvas);
             function renderWinners(ret, prizeLabel) {
-                console.log('Winners:', ret); // For debugging
+                console.log('Winners:', ret); 
                 const winnerCount = ret.length;
                 let containerClass = 'winner-container';
 
-                if (winnerCount === 1) {
-                    containerClass += ' single-winner';
-                } else if (winnerCount === 2) {
-                    containerClass += ' two-winners';
-                } else if (winnerCount === 3) {
-                    containerClass += ' three-winners';
-                } else if (winnerCount === 4) {
+                if (winnerCount <= 4) {
                     containerClass += ' four-winners';
-                } else if (winnerCount === 5) {
-                    containerClass += ' five-winners';
-                } else if (winnerCount === 6) {
-                    containerClass += ' six-winners';
-                } else if (winnerCount === 7) {
-                    containerClass += ' seven-winners';
-                } else if (winnerCount === 8) {
+                } else if (winnerCount <= 8) {
                     containerClass += ' eight-winners';
-                } else if (winnerCount === 9) {
-                    containerClass += ' nine-winners';
-                } else if (winnerCount === 10) {
-                    containerClass += ' ten-winners';
-                } else if (winnerCount > 1) {
+                } else {
                     containerClass += ' multiple-winners';
                 }
 
@@ -929,8 +874,8 @@
 
                 ret.forEach(m => {
                     html += `
-                        <div class="winner-item-text-only"> <!-- Changed class -->
-                            <span class="winner-name">${m.name} ${m.prizeItem ? '(' + m.prizeItem + ')' : ''}</span>
+                        <div class="winner-item-text-only">
+                            <span class="winner-name">${m.name}</span>
                             <span class="winner-phone">${m.phone}</span>
                         </div>
                     `;
@@ -938,84 +883,52 @@
 
                 html += '</div>';
 
-                // Hiển thị kết quả
                 $('#result').html(html).show();
                 $('#main').addClass('mask');
-                needConfirm = true; // 🔒 khóa quay
+                needConfirm = true; 
 
-                // Set current-prize-title text and color for winner interface
                 document.getElementById('current-prize-title').innerHTML = prizeLabel;
                 document.getElementById('current-prize-title').style.color = '#f8ff8f';
 
-                                // Thêm hiệu ứng pháo hoa
-                                createConfetti();
+                createConfetti();
                 
-                                // Play victory music
-                                var randomVicTrack = Math.floor(Math.random() * 3) + 1; // 1 to 3
-                                var vicMusicFile = `audio/m_vic${randomVicTrack}.mp3`;
-                                bgMusic.src = vicMusicFile;
-                                bgMusic.loop = false; // Victory music should not loop
-                                bgMusic.play();
-                            }
-            function createConfetti() {
-                // Burst chính từ giữa
-                confetti({
-                    particleCount: 200,
-                    spread: 90,
-                    origin: { y: 0.6, x: 0.5 },
-                    colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#800080', '#ffc0cb', '#a52a2a'],
-                    scalar: 1.5
-                });
-
-                // Burst từ trái
-                setTimeout(() => {
-                    confetti({
-                        particleCount: 100,
-                        angle: 60,
-                        spread: 70,
-                        origin: { x: 0, y: 0.5 },
-                        colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#800080', '#ffc0cb', '#a52a2a'],
-                        scalar: 1.5
-                    });
-                }, 200);
-
-                // Burst từ phải
-                setTimeout(() => {
-                    confetti({
-                        particleCount: 100,
-                        angle: 120,
-                        spread: 70,
-                        origin: { x: 1, y: 0.5 },
-                        colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#800080', '#ffc0cb', '#a52a2a'],
-                        scalar: 1.5
-                    });
-                }, 400);
+                var randomVicTrack = Math.floor(Math.random() * 3) + 1;
+                var vicMusicFile = `audio/m_vic${randomVicTrack}.mp3`;
+                bgMusic.src = vicMusicFile;
+                bgMusic.loop = false;
+                bgMusic.play();
             }
-
+            function createConfetti() {
+                confetti({ particleCount: 200, spread: 90, origin: { y: 0.6, x: 0.5 }, colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#800080', '#ffc0cb', '#a52a2a'], scalar: 1.5 });
+                setTimeout(() => { confetti({ particleCount: 100, angle: 60, spread: 70, origin: { x: 0, y: 0.5 }, colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#800080', '#ffc0cb', '#a52a2a'], scalar: 1.5 }); }, 200);
+                setTimeout(() => { confetti({ particleCount: 100, angle: 120, spread: 70, origin: { x: 1, y: 0.5 }, colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#800080', '#ffc0cb', '#a52a2a'], scalar: 1.5 }); }, 400);
+            }
 
             window.appVue = new Vue({
                 el: '#tools',
                 data: {
                     selected: 1,
-                    selectedIndex: null,   // 👈 thêm dòng này
+                    selectedIndex: null,
                     running: false,
                     showResult: false,
                     showBackButton: false,
-                    currentPrizeIndex: 0, // Giải hiện tại đang chờ quay
-                    highlightInterval: null,
-                    fireworksInterval: null,
+                    currentSubDrawCount: 0,
+                    prizeImages: {
+                        'Giải Ba': ['img_webp/giai_ba_1.webp', 'img_webp/giai_ba_2.webp'],
+                        'Khuyến Khích': ['img_webp/khuyen_khich_1.webp', 'img_webp/khuyen_khich_2.webp', 'img_webp/khuyen_khich_3.webp', 'img_webp/khuyen_khich_4.webp', 'img_webp/khuyen_khich_5.webp']
+                    },
                     btns: [
                         { label: 'Đặc Biệt', cn: '特别奖', value: 1, done: false, image: 'img_webp/dac_biet.webp' },
                         { label: 'Giải Nhất', cn: '一等奖', value: 1, done: false, image: 'img_webp/giai_nhat.webp' },
                         { label: 'Giải Nhì', cn: '二等奖', value: 2, done: false, image: 'img_webp/giai_nhi.webp' },
-                        { label: 'Giải Ba', cn: '三等奖', value: 9, done: false, image: 'img_webp/giai_ba.webp' },
+                        { label: 'Giải Ba', cn: '三等奖', value: 8, done: false, image: 'img_webp/giai_ba.webp' },
                         { label: 'Khuyến Khích', cn: '鼓励奖', value: 20, done: false, image: 'img_webp/khuyen_khich.webp' },
                         { label: 'Khích Lệ', cn: '安慰奖', value: 50, done: false, image: 'img_webp/khich_le.webp' },
                         { label: 'Giải Bonus', cn: '奖金', value: 0, done: false, image: 'img_webp/bonus.webp' }
                     ],
                     prizeItems: {
-                        'Giải Ba': { 'Bàn Là': 4, 'Quạt': 5 },
-                        'Khuyến Khích': { 'Củ Sạc': 4, 'Sạc DP': 4, 'Nồi Inox': 4, 'Chảo': 4, 'Nồi Điện': 4 }
+                        'Giải Ba': ['Quạt', 'Bàn là'],
+                        'Khuyến Khích': ['Củ Sạc', 'Sạc Dự Phòng', 'Nồi Inox', 'Chảo', 'Nồi Điện']
                     }
                 },
                 computed: {
@@ -1031,101 +944,100 @@
                     }
                 },
                 mounted() {
-                    canvas.innerHTML = createHTML();
-                    TagCanvas.Start('myCanvas', '', {
-                        textColour: null,
-                        initial: speed(),
-                        dragControl: 1,
-                        textFont: 'bold 27px sans-serif'
+                    this.btns.forEach(item => {
+                         this.$set(item, 'originalValue', item.value);
                     });
-
+                    canvas.innerHTML = createHTML();
+                    TagCanvas.Start('myCanvas', '', { textColour: null, initial: speed(), dragControl: 1, textFont: 'bold 27px sans-serif' });
                     var lastIndex = localStorage.getItem('lastSelectedIndex');
                     if (lastIndex !== null) {
                         var index = parseInt(lastIndex, 10);
                         var lastPrize = this.btns[index];
                         if (lastPrize && !lastPrize.done) {
-                            this.selectedIndex = index;
-                            this.selected = Math.min(lastPrize.value, 10);
-                            document.getElementById('current-prize-title').innerHTML = lastPrize.label + ' - ' + lastPrize.cn;
-                            document.getElementById('current-prize-title').style.color = '#FFFFFF';
-                            if (lastPrize.image) {
-                                document.getElementById('main').style.backgroundImage = 'url(' + lastPrize.image + ')';
-                            }
+                            this.onClick(lastPrize, index);
                         }
                     }
                 },
                 methods: {
+                    getDisplayValue(item) {
+                        const prizeLabel = item.label;
+                        const isMultiDrawPrize = prizeLabel === 'Giải Ba' || prizeLabel === 'Khuyến Khích';
+                        if (isMultiDrawPrize && this.selectedIndex === item.originalIndex && item.value > 0) {
+                            const totalDraws = prizeLabel === 'Giải Ba' ? 2 : 5;
+                            const drawsDone = Math.floor((item.originalValue - item.value) / 4);
+                            return `L${drawsDone + 1}/${totalDraws}`;
+                        }
+                         return item.done ? 'Hết' : item.value;
+                    },
                     confirmResult: function () {
                         document.getElementById('result').style.display = 'none';
                         document.getElementById('main').classList.remove('mask');
-
                         this.showBackButton = false;
-                        this.running = false; // Allow starting a new spin
-
-                                    needConfirm = false;
-                                    TagCanvas.SetSpeed('myCanvas', speed()); // Reset to random speed
-                                    document.getElementById('current-prize-title').style.color = '#FFFFFF';                    },
+                        this.running = false;
+                        needConfirm = false;
+                        TagCanvas.SetSpeed('myCanvas', speed());
+                        
+                        // After confirming, update the title for the next sub-draw
+                        const lastPrize = this.btns[this.selectedIndex];
+                        if(lastPrize && !lastPrize.done) {
+                            // Re-run onClick to update the title to the next sub-prize
+                            this.onClick(lastPrize, this.selectedIndex);
+                        } else if (lastPrize) {
+                            // If prize is done, just show the main title
+                            document.getElementById('current-prize-title').innerHTML = lastPrize.label + ' - ' + lastPrize.cn;
+                        }
+                         document.getElementById('current-prize-title').style.color = '#FFFFFF';
+                    },
                     showResetAlert: function () {
                         showResetAlert();
                     },
                     onClick: function (item, index) {
                         if (item.done || this.running) return;
-
                         $('#result').css('display', 'none');
                         $('#main').removeClass('mask');
-
-                        this.selected = Math.min(item.value, 10);
                         this.selectedIndex = index;
                         localStorage.setItem('lastSelectedIndex', index);
-                        document.getElementById('current-prize-title').innerHTML = item.label + ' - ' + item.cn;
-                        document.getElementById('current-prize-title').style.color = '#FFFFFF';
-                        if (item.image) {
-                            document.getElementById('main').style.backgroundImage = 'url(' + item.image + ')';
-                        } else {
-                            document.getElementById('main').style.backgroundImage = 'url(img_webp/icon-wall.webp)';
+                        
+                        // Recalculate currentSubDrawCount based on remaining value, to handle resume correctly
+                        this.currentSubDrawCount = Math.floor(((item.originalValue || item.value) - item.value) / 4);
+
+                        const prizeLabel = item.label;
+                        const isMultiDrawPrize = prizeLabel === 'Giải Ba' || prizeLabel === 'Khuyến Khích';
+                        let currentTitle = `${item.label} - ${item.cn}`;
+                        if (isMultiDrawPrize) {
+                            const itemDisplayName = this.prizeItems[prizeLabel][this.currentSubDrawCount];
+                            if (itemDisplayName) {
+                                currentTitle += ` - ${itemDisplayName}`;
+                            }
                         }
+                        document.getElementById('current-prize-title').innerHTML = currentTitle;
+                        
+                        // ALWAYS use the main prize image
+                        document.getElementById('main').style.backgroundImage = 'url(' + (item.image || 'img_webp/icon-wall.webp') + ')';
+                        document.getElementById('current-prize-title').style.color = '#FFFFFF';
                     },
                     startLottery: function () {
-                        // ENFORCE a prize selection
-                        if (this.selectedIndex === null) {
-                            showNoPrizeAlert();
-                            return;
-                        }
+                        if (this.selectedIndex === null) { return showNoPrizeAlert(); }
                         if (this.running || needConfirm) return;
-
                         var currentPrize = this.btns[this.selectedIndex];
-                        if (currentPrize.value <= 0) {
-                            showAlert();
-                            return;
-                        }
-                        this.selected = Math.min(currentPrize.value, 10);
-
-                        var prizeLabel = currentPrize.label;
+                        if (currentPrize.value <= 0) { return showAlert(); }
                         
-                        // Set music file based on prize - CORRECTED LABELS
-                        var musicFile = '';
-                        if (prizeLabel === 'Đặc Biệt') { // CORRECTED
-                            musicFile = 'audio/m_quay_dacbiet.mp3';
-                        } else if (prizeLabel === 'Giải Nhất') { // CORRECTED
-                            musicFile = 'audio/m_quay_nhat.mp3';
-                        } else {
-                            var randomTrack = Math.floor(Math.random() * 6) + 1;
-                            musicFile = `audio/m${randomTrack}.mp3`;
-                        }
+                        var prizeLabel = currentPrize.label;
+                        var isMultiDrawPrize = prizeLabel === 'Giải Ba' || prizeLabel === 'Khuyến Khích';
+                        this.selected = isMultiDrawPrize ? 4 : Math.min(currentPrize.value, 10);
+                        if (currentPrize.value < this.selected) { return showAlert(); }
+                        
+                        this.currentSubDrawCount = Math.floor(((currentPrize.originalValue || currentPrize.value) - currentPrize.value) / 4);
+                        
+                        var musicFile = `audio/m${Math.floor(Math.random() * 6) + 1}.mp3`;
+                        if (prizeLabel === 'Đặc Biệt') { musicFile = 'audio/m_quay_dacbiet.mp3'; }
+                        else if (prizeLabel === 'Giải Nhất') { musicFile = 'audio/m_quay_nhat.mp3'; }
 
-                        // Set spin duration based on prize - CORRECTED LABELS
-                        var spinDuration = 10000; // Default: 10 seconds
-                        if (prizeLabel === 'Đặc Biệt') { // CORRECTED
-                            spinDuration = 20000; // 20 seconds
-                        } else if (prizeLabel === 'Giải Nhất') { // CORRECTED
-                            spinDuration = 15000; // 15 seconds
-                        }
+                        var spinDuration = (prizeLabel === 'Đặc Biệt') ? 20000 : (prizeLabel === 'Giải Nhất' ? 15000 : 10000);
 
-                        // --- Start Spinning ---
                         this.running = true;
-                        $('#result').css('display', 'none');
+                        $('#result').hide();
                         $('#main').removeClass('mask');
-
                         bgMusic.src = musicFile;
                         bgMusic.loop = true;
                         bgMusic.currentTime = 0;
@@ -1149,62 +1061,47 @@
                                     // --- Officially End Spin ---
                                     bgMusic.pause();
                                     var ret = lottery(this.selected, prizeLabel);
-                                    
-                                    var finalPrizeLabel = "GIẢI PHẦN THƯỞNG"; // Default
-                                    if (this.selectedIndex !== null) {
-                                        var prize = this.btns[this.selectedIndex];
-                                        finalPrizeLabel = prize.label + ' - ' + prize.cn;
+                                    if (ret.length === 0) {
+                                        this.running = false;
+                                        return $('#result').show().html('<span style="width: 250px;"><b style="font-size:32px;color:#d32f2f">Đã hết người</b><br><small style="font-size:20px;color:#555">已抽完</small></span>');
                                     }
-
-                                    if (this.selectedIndex !== null) {
-                                        var prize = this.btns[this.selectedIndex];
-                                        prize.value -= this.selected;
-                                        if (prize.value <= 0) {
-                                            prize.done = true;
+                                    
+                                    var finalPrizeLabel = `${prizeLabel} - ${currentPrize.cn}`;
+                                    if (isMultiDrawPrize) {
+                                        const itemDisplayName = this.prizeItems[prizeLabel][this.currentSubDrawCount];
+                                        if (itemDisplayName) {
+                                            finalPrizeLabel = `${prizeLabel} - ${currentPrize.cn} - ${itemDisplayName}`;
                                         }
                                     }
-
-                                    if (ret.length === 0) {
-                                        $('#result').css('display', 'block').html(
-                                            '<span style="width: 250px;">' +
-                                            '<b style="font-size:32px;color:#d32f2f">Đã hết người</b><br>' +
-                                            '<small style="font-size:20px;color:#555">已抽完</small>' +
-                                            '</span>'
-                                        );
-                                        this.running = false; 
-                                        return;
-                                    }
-
+                                    
                                     renderWinners(ret, finalPrizeLabel);
+                                    currentPrize.value -= ret.length;
+                                    if (currentPrize.value <= 0) { currentPrize.done = true; }
+                                    
                                     this.showResult = true;
                                     this.showBackButton = true;
                                     TagCanvas.Reload('myCanvas');
                                     setTimeout(() => {
-                                        var winners = ret.map(item => [item.name, item.phone, item.prizeItem]);
-                                        localStorage.setItem(new Date().toString(), JSON.stringify({ prize: finalPrizeLabel, winners: winners }));
+                                        localStorage.setItem(new Date().toString(), JSON.stringify({ prize: finalPrizeLabel, winners: ret.map(item => [item.name, item.phone, item.prizeItem]) }));
                                         $('#main').addClass('mask');
                                     }, 300);
                                 }
                             }, 50); 
                         }, spinDuration);
                     },
-                    editQuantity: function (item, index) { // 'index' is the originalIndex
+                    editQuantity: function (item, index) { 
                         if (this.running) return;
-
-                        const originalItem = this.btns[index]; // Get the REAL item from the source array
-
+                        const originalItem = this.btns[index];
                         var currentVal = originalItem.value;
                         var newVal = prompt(`Nhập số lượng mới cho giải "${originalItem.label}":`, currentVal);
-
                         if (newVal !== null) {
                             var newQuantity = parseInt(newVal, 10);
                             if (!isNaN(newQuantity) && newQuantity >= 0) {
-                                originalItem.value = newQuantity; // Modify the original object
-                                if (newQuantity > 0) {
-                                    originalItem.done = false; // Also modify the original
-                                } else {
-                                    originalItem.done = true;
+                                originalItem.value = newQuantity;
+                                if(typeof originalItem.originalValue !== 'undefined') {
+                                    originalItem.originalValue = newQuantity;
                                 }
+                                originalItem.done = newQuantity <= 0;
                             } else {
                                 alert('Vui lòng nhập một số hợp lệ.');
                             }
