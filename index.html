@@ -951,23 +951,31 @@
                         { label: 'Giải Ba', cn: '三等奖', value: 8, done: false, image: 'img_webp/giai_ba.webp' },
                         { label: 'Khuyến Khích', cn: '鼓励奖', value: 20, done: false, image: 'img_webp/khuyen_khich.webp' },
                         { label: 'Khích Lệ', cn: '安慰奖', value: 40, done: false, image: 'img_webp/khich_le.webp' },
-                        { label: 'Giải Bonus', cn: '奖金', value: 0, done: false, image: 'img_webp/bonus.webp' }
+                        { label: 'Giải Tri Ân', cn: '感恩奖', value: 15, done: false, image: 'img_webp/tri_an.webp' },
+                        { label: 'Giải Bonus', cn: '奖金', value: 3, done: false, image: 'img_webp/bonus.webp' }
                     ],
                     prizeItems: {
                         'Giải Ba': ['Quạt', 'Bàn là'],
                         'Khuyến Khích': ['Củ Sạc', 'Sạc Dự Phòng', 'Nồi Inox', 'Chảo', 'Nồi Điện'],
-                        'Khích Lệ': ['Tai 825', 'Tai 225', 'Dây sạc 247', 'Dây sạc 247']
+                        'Khích Lệ': ['Tai 825', 'Tai 225', 'Dây sạc 247', 'Dây sạc 247'],
+                        'Giải Tri Ân': ['Tai 494', 'Romell', 'Airpods']
+                    },
+                    multiDrawConfig: {
+                        'Giải Ba': { winners: 4, draws: 2 },
+                        'Khuyến Khích': { winners: 4, draws: 5 },
+                        'Khích Lệ': { winners: 10, draws: 4 },
+                        'Giải Tri Ân': { winners: 5, draws: 3 }
                     }
                 },
                 computed: {
                     topRowBtns: function () {
-                        return this.btns.slice(0, 3).map((item, index) => {
+                        return this.btns.slice(0, 4).map((item, index) => {
                             return { ...item, originalIndex: index };
                         });
                     },
                     bottomRowBtns: function () {
-                        return this.btns.slice(3).map((item, index) => {
-                            return { ...item, originalIndex: index + 3 };
+                        return this.btns.slice(4).map((item, index) => {
+                            return { ...item, originalIndex: index + 4 };
                         });
                     }
                 },
@@ -989,15 +997,11 @@
                 methods: {
                     getDisplayValue(item) {
                         const prizeLabel = item.label;
-                        const isMultiDrawPrize = prizeLabel === 'Giải Ba' || prizeLabel === 'Khuyến Khích' || prizeLabel === 'Khích Lệ';
+                        const isMultiDrawPrize = Object.keys(this.multiDrawConfig).includes(prizeLabel);
                         if (isMultiDrawPrize && this.selectedIndex === item.originalIndex && item.value > 0) {
-                            const totalDraws = prizeLabel === 'Giải Ba' ? 2 : (prizeLabel === 'Khuyến Khích' ? 5 : (prizeLabel === 'Khích Lệ' ? 4 : 0));
-                            let winnersPerDraw = 4;
-                            if (prizeLabel === 'Khích Lệ') {
-                                winnersPerDraw = 10;
-                            }
-                            const drawsDone = Math.floor((item.originalValue - item.value) / winnersPerDraw);
-                            return `L${drawsDone + 1}/${totalDraws}`;
+                            const config = this.multiDrawConfig[prizeLabel];
+                            const drawsDone = Math.floor((item.originalValue - item.value) / config.winners);
+                            return `L${drawsDone + 1}/${config.draws}`;
                         }
                          return item.done ? 'Hết' : item.value;
                     },
@@ -1030,16 +1034,14 @@
                         this.selectedIndex = index;
                         localStorage.setItem('lastSelectedIndex', index);
                         
-                        // Recalculate currentSubDrawCount based on remaining value, to handle resume correctly
-                        const prizeLabelOnClick = item.label;
-                        let winnersPerDrawOnClick = 4;
-                        if (prizeLabelOnClick === 'Khích Lệ') {
-                            winnersPerDrawOnClick = 10;
-                        }
-                        this.currentSubDrawCount = Math.floor(((item.originalValue || item.value) - item.value) / winnersPerDrawOnClick);
-
                         const prizeLabel = item.label;
-                        const isMultiDrawPrize = prizeLabel === 'Giải Ba' || prizeLabel === 'Khuyến Khích' || prizeLabel === 'Khích Lệ';
+                        const isMultiDrawPrize = Object.keys(this.multiDrawConfig).includes(prizeLabel);
+                        
+                        if (isMultiDrawPrize) {
+                            const config = this.multiDrawConfig[prizeLabel];
+                            this.currentSubDrawCount = Math.floor(((item.originalValue || item.value) - item.value) / config.winners);
+                        }
+
                         let currentTitle = `${item.label} - ${item.cn}`;
                         if (isMultiDrawPrize) {
                             const itemDisplayName = this.prizeItems[prizeLabel][this.currentSubDrawCount];
@@ -1059,18 +1061,18 @@
                         var currentPrize = this.btns[this.selectedIndex];
                         if (currentPrize.value <= 0) { return showAlert(); }
                         
-                        var prizeLabel = currentPrize.label;
-                        var isMultiDrawPrize = prizeLabel === 'Giải Ba' || prizeLabel === 'Khuyến Khích' || prizeLabel === 'Khích Lệ';
+                        const prizeLabel = currentPrize.label;
+                        const isMultiDrawPrize = Object.keys(this.multiDrawConfig).includes(prizeLabel);
                         
-                        let winnersPerDraw = 4; // default for multi-draw
-                        if (prizeLabel === 'Khích Lệ') {
-                            winnersPerDraw = 10;
+                        if (isMultiDrawPrize) {
+                            const config = this.multiDrawConfig[prizeLabel];
+                            this.selected = config.winners;
+                            this.currentSubDrawCount = Math.floor(((currentPrize.originalValue || currentPrize.value) - currentPrize.value) / config.winners);
+                        } else {
+                            this.selected = Math.min(currentPrize.value, 10);
                         }
 
-                        this.selected = isMultiDrawPrize ? winnersPerDraw : Math.min(currentPrize.value, 10);
                         if (currentPrize.value < this.selected) { return showAlert(); }
-                        
-                        this.currentSubDrawCount = Math.floor(((currentPrize.originalValue || currentPrize.value) - currentPrize.value) / winnersPerDraw);
                         
                         var musicFile = `audio/m${Math.floor(Math.random() * 6) + 1}.mp3`;
                         if (prizeLabel === 'Đặc Biệt') { musicFile = 'audio/m_quay_dacbiet.mp3'; }
