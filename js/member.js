@@ -3,6 +3,7 @@ var member = [
   { "phone": "F0580161", "name": "陶文飛 - 副理" },
   { "phone": "F0832466", "name": "陽章立 - 經理" },
   { "phone": "F0834092", "name": "帥東 - 課長" },
+  { "phone": "V3171394", "name": "Lê Văn Chung" },
   { "phone": "F0840040", "name": "黃傑華" },
   { "phone": "F0841084", "name": "戴彬彬" },
   { "phone": "F0842428", "name": "戴魏" },
@@ -146,7 +147,6 @@ var member = [
   { "phone": "V3144449", "name": "Thân Văn Hiền" },
   { "phone": "V3165275", "name": "Đặng Danh Trung" },
   { "phone": "V3168471", "name": "Cù Năng Thanh" },
-  { "phone": "V3171394", "name": "Lê Văn Chung" },
   { "phone": "V3173843", "name": "Trần Thị Hồng Liên" },
   { "phone": "V3174607", "name": "Đinh Thị Yêu" },
   { "phone": "V3178168", "name": "Trần Mạnh Hoàng" }
