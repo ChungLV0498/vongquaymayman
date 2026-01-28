@@ -252,6 +252,18 @@
             grid-template-rows: repeat(5, 1fr); */
         }
 
+        /* 11 người */
+        .eleven-winners .winner-item-text-only {
+            flex-basis: 22%; /* Approx 1/4 width with some gap */
+            margin-bottom: 20px;
+        }
+        .eleven-winners .winner-name {
+            font-size: 3.2rem;
+        }
+        .eleven-winners .winner-phone {
+            font-size: 2.4rem;
+        }
+
         /* 3 người */
         .three-winners .winner-item-text-only {
             flex-basis: 45%;
@@ -893,6 +905,9 @@
                     case 10:
                         containerClass += ' ten-winners';
                         break;
+                    case 11:
+                        containerClass += ' eleven-winners';
+                        break;
                     default:
                         containerClass += ' multiple-winners';
                 }
@@ -951,7 +966,7 @@
                         { label: 'Giải Ba', cn: '三等奖', value: 8, done: false, image: 'img_webp/giai_ba.webp' },
                         { label: 'Khuyến Khích', cn: '鼓励奖', value: 20, done: false, image: 'img_webp/khuyen_khich.webp' },
                         { label: 'Khích Lệ', cn: '安慰奖', value: 40, done: false, image: 'img_webp/khich_le.webp' },
-                        { label: 'Giải Tri Ân', cn: '感恩奖', value: 27, done: false, image: 'img_webp/tri_an.webp' },
+                        { label: 'Giải Tri Ân', cn: '感恩奖', value: 29, done: false, image: 'img_webp/tri_an.webp' },
                         { label: 'Giải Bonus', cn: '奖金', value: 3, done: false, image: 'img_webp/bonus.webp' }
                     ],
                     prizeItems: {
@@ -964,7 +979,7 @@
                         'Giải Ba': { winners: 4, draws: 2 },
                         'Khuyến Khích': { winners: 4, draws: 5 },
                         'Khích Lệ': { winners: 10, draws: 4 },
-                        'Giải Tri Ân': { winners: [10, 9, 4, 4], draws: 4 }
+                        'Giải Tri Ân': { winners: [11, 10, 4, 4], draws: 4 }
                     }
                 },
                 computed: {
