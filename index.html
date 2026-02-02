@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/wall.css">
     <style type="text/css">
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+    
 
         body,
         html {
@@ -161,7 +161,7 @@
             color: #f8ff8f;
             /* LemonChiffon for high contrast */
             font-weight: bold;
-            font-family: 'Dancing Script', cursive;
+            font-family: 'Times New Roman', Times, serif;
             font-size: 30px;
             width: auto;
             padding: 2px;
@@ -177,7 +177,7 @@
             /* Cornsilk for high contrast */
             font-size: 27px;
             /* Increased by 1.5x from 18px */
-            font-family: 'Dancing Script', cursive;
+            font-family: 'Times New Roman', Times, serif;
             width: auto;
             padding: 2px;
             text-align: center;
@@ -410,7 +410,7 @@
             transform: translateX(-50%);
             font-size: 5rem;
             font-weight: bold;
-            font-family: 'Dancing Script', cursive;
+            font-family: 'Times New Roman', Times, serif;
             /* Thêm dòng này để đổi màu chữ */
 
 
@@ -832,14 +832,25 @@
     </script>
 
 
-    <script type="text/javascript">
-        (function () {
-            var choosed = JSON.parse(localStorage.getItem('choosed')) || {};
-            var bgMusic = document.getElementById('bgMusic'); // 🎵 nhạc nền
-            var isToggling = false;
+                    <script type="text/javascript">
 
-            console.log(choosed);
-            var speed = function () {
+
+                    (function () {
+
+
+                        var choosed = JSON.parse(localStorage.getItem('choosed')) || {};
+
+
+                        var bgMusic = document.getElementById('bgMusic'); // 🎵 nhạc nền
+
+
+                        var isToggling = false;
+
+
+            
+
+
+                        console.log(choosed);            var speed = function () {
                 return [0.1 * Math.random() + 0.01, -(0.1 * Math.random() + 0.01)];
             };
             var getKey = function (item) {
@@ -861,15 +872,34 @@
                 var list = canvas.getElementsByTagName('a');
                 var color = 'yellow';
 
-                var remaining = member.filter(m => !choosed[getKey(m)]);
+                // Get all members from the original list who haven't already won
+                var remainingWithDuplicates = member.filter(m => !choosed[getKey(m)]);
 
-                var ret = remaining
+                // Now, create a unique list of potential winners from the remaining list
+                const uniqueEligible = [];
+                const seenPhones = new Set();
+                for (const p of remainingWithDuplicates) {
+                    if (!seenPhones.has(p.phone)) {
+                        seenPhones.add(p.phone);
+                        uniqueEligible.push(p);
+                    }
+                }
+
+                // Select winners from the unique list
+                var ret = uniqueEligible
                     .map(m => Object.assign({ score: Math.random() }, m))
                     .sort((a, b) => a.score - b.score)
                     .slice(0, count)
                     .map(m => {
+                        // Mark this person as chosen using their unique key
                         choosed[getKey(m)] = 1;
-                        list[m.index].style.color = color;
+
+                        // Find ALL instances of this winner in the original member list and update their color on the canvas
+                        for (let i = 0; i < member.length; i++) {
+                            if (member[i].phone === m.phone) {
+                                list[i].style.color = color;
+                            }
+                        }
 
                         // Assign specific prize item if applicable based on sub-draw count
                         if (appVue.prizeItems[prizeLabel] && Array.isArray(appVue.prizeItems[prizeLabel])) {
@@ -1013,7 +1043,7 @@
                          this.$set(item, 'originalValue', item.value);
                     });
                     canvas.innerHTML = createHTML();
-                    TagCanvas.Start('myCanvas', '', { textColour: null, initial: speed(), dragControl: 1, textFont: 'bold 27px sans-serif' });
+                    TagCanvas.Start('myCanvas', '', { textColour: null, initial: speed(), dragControl: 1, textFont: 'bold 27px "Times New Roman", Times, serif' });
                     var lastIndex = localStorage.getItem('lastSelectedIndex');
                     if (lastIndex !== null) {
                         var index = parseInt(lastIndex, 10);
@@ -1129,7 +1159,7 @@
                         if (prizeLabel === 'Đặc Biệt') { musicFile = 'audio/m_quay_dacbiet.mp3'; }
                         else if (prizeLabel === 'Giải Nhất') { musicFile = 'audio/m_quay_nhat.mp3'; }
 
-                        var spinDuration = (prizeLabel === 'Đặc Biệt') ? 20000 : (prizeLabel === 'Giải Nhất' ? 15000 : 10000);
+                        var spinDuration = 7500; // 7.5 seconds for all prizes
 
                         this.running = true;
                         $('#result').hide();
